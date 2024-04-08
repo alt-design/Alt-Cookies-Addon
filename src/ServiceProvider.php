@@ -14,6 +14,10 @@ class ServiceProvider extends AddonServiceProvider
         \AltDesign\AltCookiesAddon\Tags\AltCookies::class,
     ];
 
+    protected $publishables = [
+        __DIR__.'/../resources/dist' => '',
+    ];
+
 //    protected $vite = [
 //        'input' => [
 //            'resources/js/alt-cookies-addon.js',
