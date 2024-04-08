@@ -1,0 +1,40 @@
+{{ AltCookies:Scripts }}
+{{ AltCookies:defaultCSS }}
+<div id="alt-cookies-consent-toast" class="toast fixed p-4 bottom-0 right-0 z-50
+    transition-duration-500 transition-all translate-y-full w-1/5 max-w-1/5">
+    <div class="bg-white shadow-lg rounded-lg p-4 ">
+        <div class="flex justify-between items-center">
+            <div class="text-lg font-semibold">Cookie Consent</div>
+            <button class="text-gray-500 hover:text-gray-700 focus:outline-none hidden" aria-label="Close">
+                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <p class="text-gray-600 mt-2">Cookies enhance your experience here. By clicking, you agree to at least our necessary cookies.</p>
+        <div class="mt-4 flex justify-between items-center">
+            <div>
+                <div>
+                    <input type="checkbox" name="Necessary" id="alt-cookies-necessary" checked disabled/>
+                    <label for="Necessary">Necessary</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="Analytics" id="alt-cookies-analytics" checked/>
+                    <label for="Analytics">Analytics</label>
+                </div>
+                <div>
+                    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" checked/>
+                    <label for="Advertising">Advertising</label>
+                </div>
+            </div>
+            <div class="mt-4 flex">
+                <button class="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600
+                    focus:outline-none focus:bg-blue-600"
+                        onclick="{{ AltCookies:accept }}">Accept</button>
+                <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400
+                    focus:outline-none focus:bg-gray-400"
+                        onclick="{{ AltCookies:decline }}">Accept Necessary</button>
+            </div>
+        </div>
+    </div>
+</div>

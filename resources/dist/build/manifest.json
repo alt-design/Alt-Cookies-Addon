@@ -1,0 +1,12 @@
+{
+  "resources/css/alt-cookies-addon.css": {
+    "file": "assets/alt-cookies-addon-9ec58ba8.css",
+    "isEntry": true,
+    "src": "resources/css/alt-cookies-addon.css"
+  },
+  "resources/js/alt-cookies-addon.js": {
+    "file": "assets/alt-cookies-addon-d943bbd9.js",
+    "isEntry": true,
+    "src": "resources/js/alt-cookies-addon.js"
+  }
+}

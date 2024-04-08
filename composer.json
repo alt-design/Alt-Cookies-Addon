@@ -8,7 +8,7 @@
     "extra": {
         "statamic": {
             "name": "Alt Cookies Addon",
-            "description": "Alt Cookies Addon addon"
+            "description": "Alt Cookies Addon"
         },
         "laravel": {
             "providers": [

@@ -1,0 +1,100 @@
+tabs:
+  general:
+    display: General
+    sections:
+      -
+        fields:
+          -
+            handle: cookie_lifetime
+            field:
+              default: '30'
+              type: integer
+              display: 'Cookie Lifetime (days)'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: necessary
+            field:
+              antlers: false
+              type: textarea
+              display: Necessary
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: enable_analytics
+            field:
+              default: true
+              type: toggle
+              display: 'Enable Analytics'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: analytics
+            field:
+              antlers: false
+              type: textarea
+              display: Analytics
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: enable_advertising
+            field:
+              default: false
+              type: toggle
+              display: 'Enable Advertising'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: advertising
+            field:
+              antlers: false
+              type: textarea
+              display: Advertising
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+  google:
+    display: Google
+    sections:
+      -
+        fields:
+          - handle: enable_google
+            field:
+              default: true
+              type: toggle
+              display: 'Enable Google'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: google_tag_id
+            field:
+              input_type: text
+              antlers: false
+              type: text
+              display: 'Google Tag ID'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+title: Settings
