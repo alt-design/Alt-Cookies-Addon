@@ -73,7 +73,6 @@ window.altCookies = {
         return null;
     },
     // Invalidate the cookie and deny google tracking on reset
-    // TODO: something around removing the non-necessary fields from the cp?
     resetConsent : function()
     {
         document.cookie = "AltCookieAddon=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
