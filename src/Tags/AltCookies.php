@@ -63,7 +63,7 @@ class AltCookies extends Tags
     {
         $vite = (new Vite)->useHotfile( __DIR__ . '/../../resources/dist/hot')->useBuildDirectory('vendor/alt-cookies-addon/build');
         $assets = sprintf('<script type="module" src="%s"></script>', $vite->asset('resources/js/alt-cookies-addon.js'));
-        $assets = sprintf('<script type="module" src="%s"></script>', $vite->asset('resources/js/frontend-manager.js'));
+        $assets .= sprintf('<script type="module" src="%s"></script>', $vite->asset('resources/js/frontend-manager.js'));
         return $assets;
     }
 
