@@ -25,7 +25,7 @@ class AltCookies extends Tags
         $return = [];
         $return[] = '<script>';
         // Read the file and swap out the tags
-        $js = (new Manager)->disk()->get('addons/Alt-Cookies-Addon/resources/js/alt-cookies-init.js');
+        $js = file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-init.js');
         $js = str_replace('{{ cookie_lifetime }}', ($data->get('cookie_lifetime') ?? 30), $js);
         $return[] = $js;
         $return[] = '</script>';
