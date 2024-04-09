@@ -1,5 +1,6 @@
 {
     "name": "alt-design/alt-cookies",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "AltDesign\\AltCookiesAddon\\": "src"
