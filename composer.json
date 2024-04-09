@@ -1,5 +1,5 @@
 {
-    "name": "alt-design/alt-cookies-addon",
+    "name": "alt-design/alt-cookies",
     "autoload": {
         "psr-4": {
             "AltDesign\\AltCookiesAddon\\": "src"
@@ -7,8 +7,8 @@
     },
     "extra": {
         "statamic": {
-            "name": "Alt Cookies Addon",
-            "description": "Alt Cookies Addon"
+            "name": "Alt Cookies",
+            "description": "Alt Cookies"
         },
         "laravel": {
             "providers": [
