@@ -68,7 +68,7 @@ class AltCookies extends Tags
      */
     public function AddonAssets()
     {
-        $vite = (new Vite)->useHotfile( __DIR__ . '/../../resources/dist/hot')->useBuildDirectory('vendor/alt-cookies-addon/build');
+        $vite = (new Vite)->useHotfile( __DIR__ . '/../../resources/dist/hot')->useBuildDirectory('vendor/alt-cookies/build');
         $assets = sprintf('<script type="module" src="%s"></script>', $vite->asset('resources/js/alt-cookies-addon.js'));
         $assets .= sprintf('<script type="module" src="%s"></script>', $vite->asset('resources/js/frontend-manager.js'));
         return $assets;
@@ -76,7 +76,7 @@ class AltCookies extends Tags
 
     public function defaultCSS()
     {
-        $vite = (new Vite)->useHotfile( __DIR__ . '/../../resources/dist/hot')->useBuildDirectory('vendor/alt-cookies-addon/build');
+        $vite = (new Vite)->useHotfile( __DIR__ . '/../../resources/dist/hot')->useBuildDirectory('vendor/alt-cookies/build');
         $assets = sprintf('<link rel="stylesheet" href="%s"/>', $vite->asset('resources/css/alt-cookies-addon.css'));
         return $assets;
     }
