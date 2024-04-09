@@ -1,4 +1,4 @@
-{{ AltCookies:Scripts }}
+{{ AltCookies:scripts }}
 {{ AltCookies:defaultCSS }}
 <div id="alt-cookies-consent-toast" class="toast fixed p-4 bottom-0 mx-auto xl:right-0 z-50
     transition-duration-500 transition-all translate-y-full w-[500px] max-w-[90%]">
@@ -11,19 +11,19 @@
                 </svg>
             </button>
         </div>
-        <p class="text-gray-600 mt-2">Cookies enhance your experience here. By clicking, you agree to at least our necessary cookies.</p>
+        <p class="text-gray-600 mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
         <div class="mt-4 flex flex-wrap justify-between items-center">
             <div>
-                <div>
+                <div class="opacity-50">
                     <input type="checkbox" name="Necessary" id="alt-cookies-necessary" checked disabled/>
                     <label for="alt-cookies-necessary">Necessary</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="Analytics" id="alt-cookies-analytics" checked/>
+                    <input type="checkbox" name="Analytics" id="alt-cookies-analytics" {{ AltCookies:Checkboxes checkbox="enable_analytics_default"}} />
                     <label for="alt-cookies-analytics">Analytics</label>
                 </div>
                 <div>
-                    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" checked/>
+                    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" {{ AltCookies:Checkboxes checkbox="enable_advertising_default"}} />
                     <label for="alt-cookies-advertising">Advertising</label>
                 </div>
             </div>

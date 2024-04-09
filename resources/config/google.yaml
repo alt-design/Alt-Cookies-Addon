@@ -2,6 +2,6 @@ gtag_js_formatter: '<!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=%s"/></script>'
 gtag_js_datalayer: '<script>
     gtag("js", new Date());
-    gtag("config", %s);
+    gtag("config", "%s");
   </script>'
 

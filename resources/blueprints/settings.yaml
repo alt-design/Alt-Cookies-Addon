@@ -26,6 +26,7 @@ tabs:
               visibility: visible
               replicator_preview: true
               hide_display: false
+              instructions: 'E.g. <code>&lt;script&gt;// script that sets cookie&lt;/script&gt;</code> or  <code>&lt;script src="https://alt-design.net/cookie.js" &gt;&lt;/script&gt;</code>'
           -
             handle: enable_analytics
             field:
@@ -37,6 +38,19 @@ tabs:
               visibility: visible
               replicator_preview: true
               hide_display: false
+              width: 25
+          -
+            handle: enable_analytics_default
+            field:
+              default: true
+              type: toggle
+              display: 'Enable Analytics By Default'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
           -
             handle: analytics
             field:
@@ -59,6 +73,19 @@ tabs:
               visibility: visible
               replicator_preview: true
               hide_display: false
+              width: 25
+          -
+            handle: enable_advertising_default
+            field:
+              default: false
+              type: toggle
+              display: 'Enable Advertising By Default'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
           -
             handle: advertising
             field:
@@ -77,7 +104,7 @@ tabs:
         fields:
           - handle: enable_google
             field:
-              default: true
+              default: false
               type: toggle
               display: 'Enable Google'
               listable: hidden

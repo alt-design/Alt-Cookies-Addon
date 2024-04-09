@@ -10,6 +10,10 @@ addEventListener("DOMContentLoaded", (event) => {
         return;
     }
 
+    if(typeof gtag === 'undefined') {
+        return;
+    }
+
     switch(cookie) {
         // Necessary and Analytics
         case "2":
@@ -19,6 +23,7 @@ addEventListener("DOMContentLoaded", (event) => {
                 'ad_personalization': 'denied',
                 'analytics_storage': 'granted'
             });
+            console.log('Analytics consent')
             break;
         // Necessary and Advertising
         case "3":
@@ -28,6 +33,8 @@ addEventListener("DOMContentLoaded", (event) => {
                 'ad_personalization': 'granted',
                 'analytics_storage': 'denied'
             });
+
+            console.log('Advertising Consent')
             break;
         // Necessary, Analytics and Advertising
         case "4":
@@ -37,9 +44,20 @@ addEventListener("DOMContentLoaded", (event) => {
                 'ad_personalization': 'granted',
                 'analytics_storage': 'granted'
             });
+
+            console.log('All Consent')
             break;
         // Accounts for necessary which doesn't need anything
         default:
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+            });
+
+            console.log('All Consent Denied')
+
             break;
     }
 });

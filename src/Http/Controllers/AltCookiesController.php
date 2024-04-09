@@ -19,7 +19,7 @@ class AltCookiesController
         $blueprint = $data->getBlueprint(true);
         $fields = $blueprint->fields()->addValues($data->all())->preProcess();
 
-        return view('alt-cookies-addon::index', [
+        return view('alt-cookies::index', [
             'blueprint' => $blueprint->toPublishArray(),
             'values'    => $fields->values(),
             'meta'      => $fields->meta(),

@@ -30,9 +30,14 @@ window.altCookies = {
         window.altCookies.denyGtagTracking();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
+        location.reload();
     },
     denyGtagTracking: function ()
     {
+        if(typeof gtag === 'undefined') {
+            return;
+        }
+
         gtag('consent', 'default', {
             'ad_storage': 'denied',
             'ad_user_data': 'denied',
@@ -75,8 +80,6 @@ window.altCookies = {
     // Invalidate the cookie and deny google tracking on reset
     resetConsent : function()
     {
-        document.cookie = "AltCookieAddon=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        window.altCookies.denyGtagTracking();
-        location.reload();
+        window.altCookies.toast.classList.remove('translate-y-full');
     },
 }

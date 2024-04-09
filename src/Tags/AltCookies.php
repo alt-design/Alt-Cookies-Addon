@@ -21,11 +21,12 @@ class AltCookies extends Tags
     {
         $data = new Data('settings');
         $google = new Data('google');
+
         $return = [];
         $return[] = '<script>';
         // Read the file and swap out the tags
         $js = (new Manager)->disk()->get('addons/Alt-Cookies-Addon/resources/js/alt-cookies-init.js');
-        $js = str_replace('{{ cookie_lifetime }}', $data->get('cookie_lifetime'), $js);
+        $js = str_replace('{{ cookie_lifetime }}', ($data->get('cookie_lifetime') ?? 30), $js);
         $return[] = $js;
         $return[] = '</script>';
         return implode(' ', $return);
@@ -45,6 +46,12 @@ class AltCookies extends Tags
         if (!$data->get('enable_google') || !($gtagId = $data->get('google_tag_id'))) {
             return;
         }
+
+        // Bail if the user hasn't accepted analytics tracking
+        if(($_COOKIE['AltCookieAddon'] ?? null) != 2 && ($_COOKIE['AltCookieAddon'] ?? null) != 4) {
+            return;
+        }
+
         $return = [];
         $return[] = '<script>window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}</script>';
@@ -119,14 +126,14 @@ class AltCookies extends Tags
     }
 
     // Views
-    public function Toast()
+    public function toast()
     {
-        return view('alt-cookies-addon::consent');
+        return view('alt-cookies::consent');
     }
 
-    public function Scripts()
+    public function scripts()
     {
-        return view('alt-cookies-addon::scripts');
+        return view('alt-cookies::scripts');
     }
 
     // Support for customs
@@ -143,5 +150,31 @@ class AltCookies extends Tags
     public function decline()
     {
         return 'window.altCookies.userConsentDenied()';
+    }
+
+    public function checkboxes()
+    {
+        $checkbox = $this->params->get('checkbox');
+
+        switch($_COOKIE['AltCookieAddon'] ?? null) {
+            case 4:
+                return 'checked';
+            case 2:
+                if($checkbox == 'enable_analytics_default') {
+                    return 'checked';
+                }
+                return '';
+            case 3:
+                if($checkbox == 'enable_advertising_default') {
+                    return 'checked';
+                }
+                return '';
+            case 1:
+                return '';
+            default :
+                $data = new Data('settings');
+                $enabled = $data->get($checkbox);
+                return $enabled ? 'checked' : '';
+        }
     }
 }

@@ -16,7 +16,7 @@ This addon features:
 You can search for this addon in the `Tools > Addons` section of the Statamic control panel and click **install**, or run the following command from your project root:
 
 ``` bash
-composer require alt-design/alt-cookies-addon
+composer require alt-design/alt-cookies
 ```
 
 ## Basic Use
@@ -25,6 +25,7 @@ To enable the default consent popup:
 
 - Open up your main `Template.antlers.html` or equivalent
 - Add our `{{ AltCookies:Toast }}` tag before the closing `</body>` tag
+- Add a way to change the preferences, up to you here, but for example, `<button onclick="{{ AltCookies:reset }}">Cookie Preferences</button>`
 - You're away!!
 
 To configure Google Analytics : 
