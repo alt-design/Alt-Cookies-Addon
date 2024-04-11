@@ -1,5 +1,6 @@
 {
     "name": "alt-design/alt-cookies",
+    "description": "Helps handle scripts and cookies on your Statamic site",
     "license": "MIT",
     "autoload": {
         "psr-4": {
