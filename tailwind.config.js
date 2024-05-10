@@ -8,9 +8,7 @@ module.exports = {
     theme: {
         extend: {
             colors:{
-                blue: {
-                    500: '#020c2e',
-                }
+                overlay: "rgba(0, 0, 0, 0.6)",
             }
         },
     },
