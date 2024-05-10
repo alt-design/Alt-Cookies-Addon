@@ -6,6 +6,13 @@ module.exports = {
         'resources/css/*.css',
     ],
     theme: {
+        extend: {
+            colors:{
+                blue: {
+                    500: '#020c2e',
+                }
+            }
+        },
     },
     plugins: [
         require('@tailwindcss/typography'),
