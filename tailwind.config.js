@@ -1,4 +1,5 @@
 module.exports = {
+    prefix: 'alt-cookie-',
     content: [
         'resources/views/*.antlers.html',
         'resources/views/*.blade.php',
