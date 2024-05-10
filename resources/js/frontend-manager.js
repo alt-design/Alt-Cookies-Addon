@@ -50,7 +50,7 @@ window.altCookies = {
         if (window.altCookies.toast === null) {
             return;
         }
-        window.altCookies.toast.classList.add('translate-y-full')
+        window.altCookies.toast.classList.add('alt-cookie-translate-y-full')
     },
     // Set the cookie with a boolean
     setAltCookie : function ()

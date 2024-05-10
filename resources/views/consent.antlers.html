@@ -1,20 +1,20 @@
 {{ AltCookies:scripts }}
 {{ AltCookies:defaultCSS }}
-<div id="alt-cookies-consent-toast" class="toast fixed p-4 bottom-0 mx-auto xl:right-0 z-50
-    transition-duration-500 transition-all translate-y-full w-[500px] max-w-[90%]">
-    <div class="bg-white shadow-lg rounded-lg p-4 ">
-        <div class="flex justify-between items-center">
-            <div class="text-lg font-semibold">Cookie Consent</div>
-            <button class="text-gray-500 hover:text-gray-700 focus:outline-none hidden" aria-label="Close">
+<div id="alt-cookies-consent-toast" class="toast alt-cookie-fixed alt-cookie-p-4 alt-cookie-bottom-0 alt-cookie-mx-auto alt-cookie-xl:right-0 alt-cookie-z-50
+    alt-cookie-transition-duration-500 alt-cookie-transition-all alt-cookie-translate-y-full alt-cookie-w-[500px] alt-cookie-max-w-[90%]">
+    <div class="alt-cookie-bg-white alt-cookie-shadow-lg alt-cookie-rounded-lg alt-cookie-p-4 ">
+        <div class="alt-cookie-flex alt-cookie-justify-between alt-cookie-items-center">
+            <div class="alt-cookie-text-lg alt-cookie-font-semibold">Cookie Consent</div>
+            <button class="alt-cookie-text-gray-500 hover:alt-cookie-text-gray-700 focus:alt-cookie-outline-none alt-cookie-hidden" aria-label="Close">
                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <p class="text-gray-600 mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
-        <div class="mt-4 flex flex-wrap justify-between items-center">
+        <p class="alt-cookie-text-gray-600 alt-cookie-mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
+        <div class="alt-cookie-mt-4 alt-cookie-flex alt-cookie-flex-wrap alt-cookie-justify-between alt-cookie-items-center">
             <div>
-                <div class="opacity-50">
+                <div class="alt-cookie-opacity-50">
                     <input type="checkbox" name="Necessary" id="alt-cookies-necessary" checked disabled/>
                     <label for="alt-cookies-necessary">Necessary</label>
                 </div>
@@ -27,12 +27,12 @@
                     <label for="alt-cookies-advertising">Advertising</label>
                 </div>
             </div>
-            <div class="mt-4 flex">
-                <button class="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600
-                    focus:outline-none focus:bg-blue-600"
+            <div class="alt-cookie-mt-4 alt-cookie-flex">
+                <button class="alt-cookie-mr-2 alt-cookie-px-4 alt-cookie-py-2 alt-cookie-bg-blue-500 alt-cookie-text-white alt-cookie-rounded hover:alt-cookie-bg-blue-600
+                    focus:alt-cookie-utline-none focus:alt-cookie-bg-blue-600"
                         onclick="{{ AltCookies:accept }}">Accept</button>
-                <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400
-                    focus:outline-none focus:bg-gray-400"
+                <button class="alt-cookie-px-4 alt-cookie-py-2 alt-cookie-bg-gray-300 alt-cookie-text-gray-700 alt-cookie-rounded hover:alt-cookie-bg-gray-400
+                    focus:alt-cookie-outline-none focus:alt-cookie-bg-gray-400"
                         onclick="{{ AltCookies:decline }}">Accept Necessary</button>
             </div>
         </div>
