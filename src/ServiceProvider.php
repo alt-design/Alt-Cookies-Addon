@@ -18,14 +18,14 @@ class ServiceProvider extends AddonServiceProvider
         __DIR__.'/../resources/dist' => '',
     ];
 
-//    protected $vite = [
-//        'input' => [
-//            'resources/js/alt-cookies-addon.js',
-//            'resources/js/frontend-manager.js',
-//            'resources/css/alt-cookies-addon.css'
-//        ],
-//        'publicDirectory' => 'resources/dist',
-//    ];
+    protected $vite = [
+        'input' => [
+            'resources/js/alt-cookies-addon.js',
+            'resources/js/frontend-manager.js',
+            'resources/css/alt-cookies-addon.css'
+        ],
+        'publicDirectory' => 'resources/dist',
+    ];
 
     /**
      * Add to the nav so it appears in the CP.

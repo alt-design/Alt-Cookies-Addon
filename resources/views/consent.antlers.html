@@ -1,39 +1,41 @@
 {{ AltCookies:scripts }}
 {{ AltCookies:defaultCSS }}
-<div id="alt-cookies-consent-toast" class="toast fixed p-4 bottom-0 mx-auto xl:right-0 z-50
-    transition-duration-500 transition-all translate-y-full w-[500px] max-w-[90%]">
-    <div class="bg-white shadow-lg rounded-lg p-4 ">
-        <div class="flex justify-between items-center">
-            <div class="text-lg font-semibold">Cookie Consent</div>
-            <button class="text-gray-500 hover:text-gray-700 focus:outline-none hidden" aria-label="Close">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-        <p class="text-gray-600 mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
-        <div class="mt-4 flex flex-wrap justify-between items-center">
-            <div>
-                <div class="opacity-50">
-                    <input type="checkbox" name="Necessary" id="alt-cookies-necessary" checked disabled/>
-                    <label for="alt-cookies-necessary">Necessary</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="Analytics" id="alt-cookies-analytics" {{ AltCookies:Checkboxes checkbox="enable_analytics_default"}} />
-                    <label for="alt-cookies-analytics">Analytics</label>
-                </div>
-                <div>
-                    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" {{ AltCookies:Checkboxes checkbox="enable_advertising_default"}} />
-                    <label for="alt-cookies-advertising">Advertising</label>
-                </div>
+<div id="alt-cookies-consent-toast-overlay" class="toast-overlay alt-cookies-fixed alt-cookies-inset-0 alt-cookies-bg-overlay">
+    <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-4 alt-cookies-bottom-0 alt-cookies-mx-auto alt-cookies-right-0 alt-cookies-z-50
+        alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-[500px] alt-cookies-max-w-[90%]">
+        <div class="alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-4 ">
+            <div class="alt-cookies-flex alt-cookies-justify-between alt-cookies-items-center">
+                <div id="alt-cookies-consent-toast-title" class="alt-cookies-text-lg alt-cookies-font-semibold">Cookie Consent</div>
+                <button class="alt-cookies-text-gray-500 hover:alt-cookies-text-gray-700 focus:alt-cookies-outline-none alt-cookies-hidden" aria-label="Close">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
-            <div class="mt-4 flex">
-                <button class="mr-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600
-                    focus:outline-none focus:bg-blue-600"
-                        onclick="{{ AltCookies:accept }}">Accept</button>
-                <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400
-                    focus:outline-none focus:bg-gray-400"
-                        onclick="{{ AltCookies:decline }}">Accept Necessary</button>
+            <p id="alt-cookies-consent-toast-text" class="alt-cookies-text-gray-600 alt-cookies-mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
+            <div class="alt-cookies-mt-4 alt-cookies-flex alt-cookies-flex-wrap alt-cookies-justify-between alt-cookies-items-center">
+                <div>
+                    <div class="alt-cookies-opacity-50">
+                        <input type="checkbox" name="Necessary" id="alt-cookies-necessary" class="alt-cookies-checkbox" checked disabled/>
+                        <label for="alt-cookies-necessary" class="alt-cookies-checkbox-label">Necessary</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="Analytics" id="alt-cookies-analytics" class="alt-cookies-checkbox" {{ AltCookies:Checkboxes checkbox="enable_analytics_default"}} />
+                        <label for="alt-cookies-analytics" class="alt-cookies-checkbox-label">Analytics</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="Advertising" id="alt-cookies-advertising" class="alt-cookies-checkbox" {{ AltCookies:Checkboxes checkbox="enable_advertising_default"}} />
+                        <label for="alt-cookies-advertising" class="alt-cookies-checkbox-label">Advertising</label>
+                    </div>
+                </div>
+                <div class="alt-cookies-mt-4 alt-cookies-flex">
+                    <button id="alt-cookies-accept" class="alt-cookies-button alt-cookies-mr-2 alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-blue-500 alt-cookies-text-white alt-cookies-rounded hover:alt-cookies-bg-blue-600
+                        focus:alt-cookies-utline-none focus:alt-cookies-bg-blue-600"
+                            onclick="{{ AltCookies:accept }}">Accept</button>
+                    <button id="alt-cookies-accept-necessary" class="alt-cookies-button alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-gray-300 alt-cookies-text-gray-700 alt-cookies-rounded hover:alt-cookies-bg-gray-400
+                        focus:alt-cookies-outline-none focus:alt-cookies-bg-gray-400"
+                            onclick="{{ AltCookies:decline }}">Accept Necessary</button>
+                </div>
             </div>
         </div>
     </div>

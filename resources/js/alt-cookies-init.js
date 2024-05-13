@@ -6,7 +6,7 @@ addEventListener("DOMContentLoaded", (event) => {
     let cookie = window.altCookies.getAltCookie();
     // Show the toast if they're new / expired
     if ( cookie === null) {
-        window.altCookies.toast.classList.remove('translate-y-full')
+        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full')
         return;
     }
 
