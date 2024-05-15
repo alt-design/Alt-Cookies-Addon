@@ -50,7 +50,8 @@ window.altCookies = {
         if (window.altCookies.toast === null) {
             return;
         }
-        window.altCookies.toast.classList.add('translate-y-full')
+        window.altCookies.toast.classList.add('alt-cookies-translate-y-full')
+        window.altCookies.toastOverlay.classList.add('alt-cookies-hidden')
     },
     // Set the cookie with a boolean
     setAltCookie : function ()
@@ -80,6 +81,7 @@ window.altCookies = {
     // Invalidate the cookie and deny google tracking on reset
     resetConsent : function()
     {
-        window.altCookies.toast.classList.remove('translate-y-full');
+        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
+        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
     },
 }
