@@ -1,7 +1,7 @@
 <?php namespace AltDesign\AltCookiesAddon\Helpers;
 
-use Statamic\Facades\Blueprint;
 use Statamic\Facades\YAML;
+use Statamic\Fields\BlueprintRepository;
 use Statamic\Filesystem\Manager;
 
 /**
@@ -70,7 +70,7 @@ class Data
     public function getBlueprint($default = false)
     {
         if($default) {
-            return Blueprint::setDirectory(__DIR__ . '/../../resources/blueprints')->find($this->type);
+            return with(new BlueprintRepository)->setDirectory(__DIR__ . '/../../resources/blueprints')->find($this->type);
         }
 
         return false;
