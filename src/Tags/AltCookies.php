@@ -128,7 +128,11 @@ class AltCookies extends Tags
     // Views
     public function toast()
     {
-        return view('alt-cookies::consent');
+        $data = new Data('settings');
+        if (!($data->get('simple_popup') ?? false)) {
+            return view('alt-cookies::consent');
+        }
+        return view('alt-cookies::consent-simple');
     }
 
     public function scripts()
@@ -144,6 +148,10 @@ class AltCookies extends Tags
 
     public function accept()
     {
+        $simple = $this->params->get('simple') ?? false;
+        if ($simple) {
+            return 'window.altCookies.simpleConsentGranted()';
+        }
         return 'window.altCookies.userConsentGranted()';
     }
 

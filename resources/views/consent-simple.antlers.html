@@ -1,0 +1,28 @@
+{{ AltCookies:scripts }}
+{{ AltCookies:defaultCSS }}
+<div id="alt-cookies-consent-toast-overlay" class="toast-overlay alt-cookies-hidden alt-cookies-fixed alt-cookies-inset-0 alt-cookies-bg-overlay alt-cookies-z-[999]">
+    <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-4 alt-cookies-bottom-0 alt-cookies-mx-auto alt-cookies-right-0
+        alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-[500px] alt-cookies-max-w-[90%]">
+        <div class="alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-4 ">
+            <div class="alt-cookies-flex alt-cookies-justify-between alt-cookies-items-center">
+                <div id="alt-cookies-consent-toast-title" class="alt-cookies-text-lg alt-cookies-font-semibold">Cookie Consent</div>
+                <button class="alt-cookies-text-gray-500 hover:alt-cookies-text-gray-700 focus:alt-cookies-outline-none alt-cookies-hidden" aria-label="Close">
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <p id="alt-cookies-consent-toast-text" class="alt-cookies-text-gray-600 alt-cookies-mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
+            <div class="alt-cookies-mt-4 alt-cookies-flex alt-cookies-flex-wrap alt-cookies-justify-between alt-cookies-items-center">
+                <div class="alt-cookies-mt-4 alt-cookies-flex">
+                    <button id="alt-cookies-accept" class="alt-cookies-button alt-cookies-mr-2 alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-blue-500 alt-cookies-text-white alt-cookies-rounded hover:alt-cookies-bg-blue-600
+                        focus:alt-cookies-utline-none focus:alt-cookies-bg-blue-600"
+                            onclick="{{ AltCookies:accept simple='true' }}">Accept All Cookies</button>
+                    <button id="alt-cookies-accept-necessary" class="alt-cookies-button alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-gray-300 alt-cookies-text-gray-700 alt-cookies-rounded hover:alt-cookies-bg-gray-400
+                        focus:alt-cookies-outline-none focus:alt-cookies-bg-gray-400"
+                            onclick="{{ AltCookies:decline }}">Accept Necessary</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

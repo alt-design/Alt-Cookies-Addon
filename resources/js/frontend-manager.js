@@ -11,6 +11,13 @@ window.altCookies = {
         window.altCookies.hideToast();
         location.reload();
     },
+    simpleConsentGranted : function ()
+    {
+        window.altCookies.consentLevel = 4;
+        window.altCookies.setAltCookie();
+        window.altCookies.hideToast();
+        location.reload();
+    },
     buildConsentLevel : function (accepted)
     {
         if (!accepted) {
@@ -78,10 +85,17 @@ window.altCookies = {
         }
         return null;
     },
+    eraseAltCookie: function () {
+        document.cookie = 'AltCookieAddon=; Max-Age=-99999999;';
+    },
     // Invalidate the cookie and deny google tracking on reset
     resetConsent : function()
     {
         window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
         window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
+        window.altCookies.buildConsentLevel(false);
+        window.altCookies.denyGtagTracking();
+        window.altCookies.eraseAltCookie();
+        location.reload();
     },
 }

@@ -4,6 +4,17 @@ tabs:
     sections:
       -
         fields:
+          - handle: simple_popup
+            field:
+              default: false
+              type: toggle
+              display: 'Simple Cookie Popup'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              instructions: 'Changes the popup to a simpler view with 2 buttons instead of checkboxes'
           -
             handle: cookie_lifetime
             field:
