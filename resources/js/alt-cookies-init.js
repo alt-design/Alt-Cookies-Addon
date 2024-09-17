@@ -1,5 +1,5 @@
 // There's some string sub done here before being loaded. It's meant to be odd
-addEventListener("DOMContentLoaded", (event) => {
+document.addEventListener("DOMContentLoaded", (event) => {
     window.altCookies.toast = document.getElementById('alt-cookies-consent-toast');
     window.altCookies.toastOverlay = document.getElementById('alt-cookies-consent-toast-overlay');
     window.altCookies.cookieLifetime = {{ cookie_lifetime }};
