@@ -48,7 +48,7 @@ class Data
 
         // Grab the current file we're working with
         if ($type == 'google') {
-            $this->currentFile = $this->manager->disk()->get('addons/Alt-Cookies-Addon/resources/config/google.yaml');
+            $this->currentFile = $this->manager->disk()->get(__DIR__ . '/../../resources/config/google.yaml');
         } else {
             $this->currentFile = $this->manager->disk()->get('content/alt-cookies/' . $this->type . '.yaml');
         }
