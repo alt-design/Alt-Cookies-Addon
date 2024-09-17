@@ -47,11 +47,6 @@ class AltCookies extends Tags
             return;
         }
 
-        // Bail if the user hasn't accepted analytics tracking
-        if(($_COOKIE['AltCookieAddon'] ?? null) != 2 && ($_COOKIE['AltCookieAddon'] ?? null) != 4) {
-            return;
-        }
-
         $return = [];
         $return[] = '<script>window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}</script>';
