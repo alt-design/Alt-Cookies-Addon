@@ -71,7 +71,7 @@ class ServiceProvider extends AddonServiceProvider
 
         // Statamic >= V6 - unbind the settings blueprint to remove the default settings page and permissions 
         // as we are handling this manually instead
-        if(intval(Str::take(Version::get(), 1)) >= 6) {
+        if(intval(Str::before(Version::get(), '.')) >= 6) {
             app()->offsetUnset("statamic.addons.alt-cookies.settings_blueprint");
         }
     }
