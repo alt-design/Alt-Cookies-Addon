@@ -1,5 +1,7 @@
 <?php namespace AltDesign\AltCookiesAddon;
 
+use Illuminate\Support\Str;
+use Facades\Statamic\Version;
 use Statamic\Facades\CP\Nav;
 use Statamic\Facades\Permission;
 use Statamic\Providers\AddonServiceProvider;
@@ -67,8 +69,10 @@ class ServiceProvider extends AddonServiceProvider
         $this->addToNav()
             ->registerPermissions();
 
-        // Statamic V6 - unbind the settings blueprint to remove the default settings page and permissions 
+        // Statamic >= V6 - unbind the settings blueprint to remove the default settings page and permissions 
         // as we are handling this manually instead
-        app()->offsetUnset("statamic.addons.alt-cookies.settings_blueprint");
+        if(intval(Str::take(Version::get(), 1)) >= 6) {
+            app()->offsetUnset("statamic.addons.alt-cookies.settings_blueprint");
+        }
     }
 }
