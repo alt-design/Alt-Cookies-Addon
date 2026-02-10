@@ -33,7 +33,7 @@ class AltCookiesController
         $fields->validate();
 
         // Save the data
-        $data->setAll($fields->process()->values()->except(['addon_instructions', 'google_instructions'])->toArray());
+        $data->setAll($fields->process()->values()->except('addon_instructions')->toArray());
 
         return true;
     }
