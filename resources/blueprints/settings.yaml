@@ -4,7 +4,12 @@ tabs:
     sections:
       -
         fields:
-          - handle: simple_popup
+          - handle: addon_instructions
+            field:
+              type: html
+              display: 'Please note: fields for cookies (such as "Necessary") are placed on the frontend as inputted here. Please double check and make sure what you put in here is correct and safe.'
+          -
+            handle: simple_popup
             field:
               default: false
               type: toggle
@@ -113,7 +118,12 @@ tabs:
     sections:
       -
         fields:
-          - handle: enable_google
+          - handle: google_instructions
+            field:
+              type: html
+              display: "Manage Google's consent functionality and other scripts"
+          - 
+            handle: enable_google
             field:
               default: false
               type: toggle
