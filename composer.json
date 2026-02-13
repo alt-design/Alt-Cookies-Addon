@@ -17,5 +17,13 @@
                 "AltDesign\\AltCookiesAddon\\ServiceProvider"
             ]
         }
+    },
+    "require": {
+        "statamic/cms": "^4.0|^5.0|^6.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "pixelfear/composer-dist-plugin": true
+        }
     }
 }
