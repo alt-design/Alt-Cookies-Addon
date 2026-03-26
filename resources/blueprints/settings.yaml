@@ -4,7 +4,19 @@ tabs:
     sections:
       -
         fields:
-          - handle: simple_popup
+          - handle: addon_instructions
+            field:
+              type: section
+              display: 'Alt Cookies'
+              icon: section
+              instructions: "Please note: fields for cookies (such as \"Necessary\") are placed on the frontend as inputted here. Please double check and make sure what you put in here is correct and safe.<br><br>Manage Google's consent functionality and other scripts"
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: simple_popup
             field:
               default: false
               type: toggle
