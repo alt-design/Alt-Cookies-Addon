@@ -1,17 +1,23 @@
 {
   "resources/css/alt-cookies-addon.css": {
-    "file": "assets/alt-cookies-addon-92090a1c.css",
+    "file": "assets/alt-cookies-addon-CqofhORR.css",
+    "src": "resources/css/alt-cookies-addon.css",
     "isEntry": true,
-    "src": "resources/css/alt-cookies-addon.css"
+    "name": "alt-cookies-addon",
+    "names": [
+      "alt-cookies-addon.css"
+    ]
   },
   "resources/js/alt-cookies-addon.js": {
-    "file": "assets/alt-cookies-addon-4ed993c7.js",
-    "isEntry": true,
-    "src": "resources/js/alt-cookies-addon.js"
+    "file": "assets/alt-cookies-addon-l0sNRNKZ.js",
+    "name": "alt-cookies-addon",
+    "src": "resources/js/alt-cookies-addon.js",
+    "isEntry": true
   },
   "resources/js/frontend-manager.js": {
-    "file": "assets/frontend-manager-6a2a0968.js",
-    "isEntry": true,
-    "src": "resources/js/frontend-manager.js"
+    "file": "assets/frontend-manager-Apaz9CON.js",
+    "name": "frontend-manager",
+    "src": "resources/js/frontend-manager.js",
+    "isEntry": true
   }
 }
