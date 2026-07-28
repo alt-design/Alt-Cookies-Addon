@@ -19,7 +19,7 @@
         }
     },
     "require": {
-        "statamic/cms": "^4.0|^5.73.20|^6.14"
+        "statamic/cms": "^4.0|^5.74|^6.26"
     },
     "config": {
         "allow-plugins": {
