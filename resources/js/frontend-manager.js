@@ -41,7 +41,7 @@ window.altCookies = {
     },
     denyGtagTracking: function ()
     {
-        if(typeof gtag === 'undefined') {
+        if(typeof gtag === 'undefined' || window.altCookiesConsentDefaultSet) {
             return;
         }
 

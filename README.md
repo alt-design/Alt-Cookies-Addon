@@ -33,7 +33,15 @@ To configure Google Analytics :
 - Navigate to your `Control Panel > Alt Cookies`
 - Head to the `Google` tab
 - Simply enter your Google Tag ID
+- Both single tags (`G-`, `AW-`, `DC-`) and Google Tag Manager containers (`GTM-`) are supported. The correct snippet is picked based on the prefix, so a `GTM-` id gets the full Tag Manager container snippet rather than the gtag.js one.
 - Add our consent popup or make sure the Alt Cookies scripts are loaded if you're doing a custom popup
+
+### Consent mode and third party tags
+
+Consent defaults are written synchronously, immediately before the tag or container loads, based on the visitor's stored choice.
+
+Google's own tags respect this out of the box. Third party tags in a container (Meta, TikTok and similar) do not. For those you need to open the tag in Tag Manager and, under `Advanced Settings > Consent Settings`, set `Require additional consent for tag to fire` with `ad_storage`. Without that, Tag Manager fires them regardless of consent state and there's nothing this addon can do about it from outside the container.
+
 
 To configure other tracking :
 

@@ -142,6 +142,7 @@ tabs:
               antlers: false
               type: text
               display: 'Google Tag ID'
+              instructions: 'A Google tag ID (<code>G-</code>, <code>AW-</code>, <code>DC-</code>) or a Google Tag Manager container ID (<code>GTM-</code>). The right snippet is used for whichever you enter, and consent is set before it loads. Third party tags in a container (Meta, TikTok) also need consent mode enabling on the tag itself in Tag Manager.'
               listable: hidden
               instructions_position: above
               visibility: visible
