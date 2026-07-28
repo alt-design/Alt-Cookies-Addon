@@ -33,7 +33,29 @@ To configure Google Analytics :
 - Navigate to your `Control Panel > Alt Cookies`
 - Head to the `Google` tab
 - Simply enter your Google Tag ID
+- Both single tags (`G-`, `AW-`, `DC-`) and Google Tag Manager containers (`GTM-`) are supported. The correct snippet is picked based on the prefix, so a `GTM-` id gets the full Tag Manager container snippet rather than the gtag.js one.
 - Add our consent popup or make sure the Alt Cookies scripts are loaded if you're doing a custom popup
+
+### Consent mode and third party tags
+
+Consent defaults are written synchronously, immediately before the tag or container loads, based on the visitor's stored choice.
+
+Google's own tags respect this out of the box. Third party tags in a container (Meta, TikTok and similar) do not. For those you need to open the tag in Tag Manager and, under `Advanced Settings > Consent Settings`, set `Require additional consent for tag to fire` with `ad_storage`. Without that, Tag Manager fires them regardless of consent state and there's nothing this addon can do about it from outside the container.
+
+### The Tag Manager `noscript` iframe
+
+Google's install instructions include a second `<noscript>` snippet alongside the container. We deliberately don't output it.
+
+Consent mode lives entirely in JavaScript. The `noscript` iframe loads `ns.html` straight from Google with no `dataLayer` and no way to read the visitor's choice, so anything it fires does so without consent. It can't be gated either. This addon stores consent in a cookie written by JavaScript, so a visitor with JavaScript disabled can never have that cookie, never sees the banner, and has no way to consent in the first place. Gating the iframe on that cookie would mean it never renders for the only visitors who would ever use it, which is the same as leaving it out.
+
+If you need it anyway, add it yourself immediately after the opening `<body>` tag in your layout, and understand that it is not covered by the consent banner:
+
+``` html
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+```
+
+It isn't needed for Tag Assistant to validate your container, and most modern tags (GA4 included) don't fire through it regardless.
 
 To configure other tracking :
 

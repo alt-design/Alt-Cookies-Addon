@@ -33,8 +33,20 @@ class AltCookies extends Tags
     }
 
     /**
+     * The {{ AltCookies:consentDefault }} tag.
+     * Sets consent from the cookie synchronously, before anything on the page can track.
+     * Safe to output more than once, the script no-ops after the first run.
+     * @return string|array
+     */
+    public function consentDefault()
+    {
+        return '<script>' . file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-consent-default.js') . '</script>';
+    }
+
+    /**
      * The {{ AltCookies:google }} tag.
-     * gtag.js stuff, put the tagID in etc.
+     * gtag.js / Tag Manager stuff, put the tagID in etc.
+     * Self contained, it sets consent itself before loading anything.
      * @return string|array
      */
     public function google()
@@ -48,8 +60,20 @@ class AltCookies extends Tags
         }
 
         $return = [];
-        $return[] = '<script>window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}</script>';
+
+        // Consent has to be set before the tag loads, otherwise tags that aren't consent mode
+        // aware (Meta, TikTok et al in a GTM container) fire before the user has chosen. This
+        // also defines dataLayer and gtag. scripts.antlers.html has normally run it already,
+        // in which case the script no-ops, but it's repeated so the tag is safe used alone.
+        $return[] = $this->consentDefault();
+
+        // GTM- ids are containers and need the Tag Manager snippet, everything else is a gtag.js tag
+        if (str_starts_with($gtagId, 'GTM-')) {
+            $return[] = sprintf($gConf->get('gtm_js_formatter'), $gtagId);
+
+            return implode(' ', $return);
+        }
+
         $return[] = sprintf($gConf->get('gtag_js_formatter'), $gtagId); // Load gtag.js
         $return[] = sprintf($gConf->get('gtag_js_datalayer'), $gtagId); // Setup datalayer
 

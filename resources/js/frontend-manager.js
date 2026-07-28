@@ -34,23 +34,9 @@ window.altCookies = {
     userConsentDenied : function ()
     {
         window.altCookies.buildConsentLevel(false);
-        window.altCookies.denyGtagTracking();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
         location.reload();
-    },
-    denyGtagTracking: function ()
-    {
-        if(typeof gtag === 'undefined') {
-            return;
-        }
-
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied'
-        });
     },
     hideToast : function()
     {
@@ -94,7 +80,6 @@ window.altCookies = {
         window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
         window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
         window.altCookies.buildConsentLevel(false);
-        window.altCookies.denyGtagTracking();
         window.altCookies.eraseAltCookie();
         location.reload();
     },
