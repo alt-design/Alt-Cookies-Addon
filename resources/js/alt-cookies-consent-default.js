@@ -1,6 +1,11 @@
 // Runs synchronously before any Google tag loads. It has to be inline and it has to read the
 // cookie in JS rather than PHP, otherwise a statically cached page bakes in one visitor's consent.
 (function () {
+    // Consent defaults can only be set once, so a second copy on the page must not push again
+    if (window.altCookiesConsentDefaultSet) {
+        return;
+    }
+
     window.dataLayer = window.dataLayer || [];
     function gtag() { window.dataLayer.push(arguments); }
     window.gtag = window.gtag || gtag;
@@ -17,6 +22,5 @@
         'analytics_storage': analytics
     });
 
-    // Stops the frontend manager pushing a second, contradictory default once the DOM is ready
     window.altCookiesConsentDefaultSet = true;
 })();
