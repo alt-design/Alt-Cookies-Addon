@@ -1,10 +1,9 @@
 <?php namespace AltDesign\AltCookiesAddon\Tags;
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Vite;
 
 use Statamic\Tags\Tags;
-use Statamic\Filesystem\Manager;
+use Statamic\Facades\Blink;
 
 use AltDesign\AltCookiesAddon\Helpers\Data;
 
@@ -20,7 +19,6 @@ class AltCookies extends Tags
     public function init()
     {
         $data = new Data('settings');
-        $google = new Data('google');
 
         $return = [];
         $return[] = '<script>';
@@ -35,11 +33,19 @@ class AltCookies extends Tags
     /**
      * The {{ AltCookies:consentDefault }} tag.
      * Sets consent from the cookie synchronously, before anything on the page can track.
-     * Safe to output more than once, the script no-ops after the first run.
+     * Called both by scripts.antlers.html and by the google tag, so it only returns the
+     * script the first time it runs in a request. The script guards itself too, in case a
+     * cached fragment puts a second copy on the page.
      * @return string|array
      */
     public function consentDefault()
     {
+        if (Blink::has('alt-cookies-consent-default')) {
+            return;
+        }
+
+        Blink::put('alt-cookies-consent-default', true);
+
         return '<script>' . file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-consent-default.js') . '</script>';
     }
 
@@ -63,8 +69,8 @@ class AltCookies extends Tags
 
         // Consent has to be set before the tag loads, otherwise tags that aren't consent mode
         // aware (Meta, TikTok et al in a GTM container) fire before the user has chosen. This
-        // also defines dataLayer and gtag. scripts.antlers.html has normally run it already,
-        // in which case the script no-ops, but it's repeated so the tag is safe used alone.
+        // also defines dataLayer and gtag. scripts.antlers.html has normally emitted it already,
+        // in which case this returns nothing, but asking keeps the tag safe used on its own.
         $return[] = $this->consentDefault();
 
         // GTM- ids are containers and need the Tag Manager snippet, everything else is a gtag.js tag
@@ -112,14 +118,6 @@ class AltCookies extends Tags
 
         $return[] = $data->get('necessary');
 
-//        if (isset($_COOKIE['AltCookieAddon']) && $_COOKIE['AltCookieAddon'] == 'accepted') {
-//            if ($data->get('enable_analytics')) {
-//                $return[] = $data->get('analytics');
-//            }
-//            if ($data->get('enable_advertising')) {
-//                $return[] = $data->get('advertising');
-//            }
-//        }
         switch($_COOKIE['AltCookieAddon'] ?? null) {
             case 4:
                 if ($data->get('enable_advertising')) {

@@ -7,6 +7,7 @@ window.altCookies = {
     userConsentGranted : function ()
     {
         window.altCookies.buildConsentLevel(true);
+        window.altCookies.updateConsent();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
         location.reload();
@@ -14,9 +15,20 @@ window.altCookies = {
     simpleConsentGranted : function ()
     {
         window.altCookies.consentLevel = 4;
+        window.altCookies.updateConsent();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
         location.reload();
+    },
+    // Google needs the consent change signalled on the page it happened on, before the reload.
+    // Reloading into a new 'default' alone loses the transition, and the data from before it.
+    updateConsent : function ()
+    {
+        if (typeof gtag === 'undefined' || typeof window.altCookiesConsentFor !== 'function') {
+            return;
+        }
+
+        gtag('consent', 'update', window.altCookiesConsentFor(String(window.altCookies.consentLevel)));
     },
     buildConsentLevel : function (accepted)
     {
@@ -34,6 +46,7 @@ window.altCookies = {
     userConsentDenied : function ()
     {
         window.altCookies.buildConsentLevel(false);
+        window.altCookies.updateConsent();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
         location.reload();
@@ -57,29 +70,20 @@ window.altCookies = {
     // Get the value from our cookie
     getAltCookie: function ()
     {
-        let name = "AltCookieAddon=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i <ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return null;
+        let match = document.cookie.match(/(?:^|;\s*)AltCookieAddon=([^;]*)/);
+
+        return match ? match[1] : null;
     },
     eraseAltCookie: function () {
         document.cookie = 'AltCookieAddon=; Max-Age=-99999999;';
     },
-    // Invalidate the cookie and deny google tracking on reset
+    // Invalidate the cookie and revoke consent on reset
     resetConsent : function()
     {
         window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
         window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
         window.altCookies.buildConsentLevel(false);
+        window.altCookies.updateConsent();
         window.altCookies.eraseAltCookie();
         location.reload();
     },
