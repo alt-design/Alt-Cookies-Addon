@@ -1,5 +1,4 @@
-// Runs synchronously before any Google tag loads. It has to be inline and it has to read the
-// cookie in JS rather than PHP, otherwise a statically cached page bakes in one visitor's consent.
+// Runs synchronously before any Google tag loads
 (function () {
     // Consent defaults can only be set once, so a second copy on the page must not push again
     if (window.altCookiesConsentDefaultSet) {
