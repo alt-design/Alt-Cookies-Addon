@@ -148,4 +148,47 @@ tabs:
               visibility: visible
               replicator_preview: true
               hide_display: false
+          - handle: consent_default_instructions
+            field:
+              type: section
+              display: 'Consent Mode Defaults'
+              icon: section
+              instructions: "What Google is told before the visitor has answered the banner, sent on every page load as the consent mode <code>default</code>. Their actual choice is sent straight after as an <code>update</code>.<br><br>Leave both off unless you have a lawful basis for tracking without consent, for example a site with no EU visitors. These are separate from the <q>By Default</q> toggles on the General tab, which only decide whether a checkbox starts ticked. Match these to the defaults configured in your GA or Tag Manager property."
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: default_analytics_consent
+            field:
+              default: denied
+              type: select
+              display: 'analytics_storage'
+              instructions: 'The state sent for <code>analytics_storage</code> before the visitor chooses'
+              options:
+                denied: Denied
+                granted: Granted
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
+          -
+            handle: default_advertising_consent
+            field:
+              default: denied
+              type: select
+              display: 'ad_storage, ad_user_data, ad_personalization'
+              instructions: 'The state sent for the three advertising signals before the visitor chooses'
+              options:
+                denied: Denied
+                granted: Granted
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
 title: Settings

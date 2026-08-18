@@ -32,10 +32,9 @@ class AltCookies extends Tags
 
     /**
      * The {{ AltCookies:consentDefault }} tag.
-     * Sets consent from the cookie synchronously, before anything on the page can track.
-     * Called both by scripts.antlers.html and by the google tag, so it only returns the
-     * script the first time it runs in a request. The script guards itself too, in case a
-     * cached fragment puts a second copy on the page.
+     * Declares the consent baseline, then any stored choice, before anything on the page can
+     * track. Called both by scripts.antlers.html and by the google tag, so it only returns the
+     * script the first time it runs in a request.
      * @return string|array
      */
     public function consentDefault()
@@ -46,7 +45,19 @@ class AltCookies extends Tags
 
         Blink::put('alt-cookies-consent-default', true);
 
-        return '<script>' . file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-consent-default.js') . '</script>';
+        $data = new Data('settings');
+
+        $js = file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-consent-default.js');
+        $js = str_replace([
+            '{{ default_analytics_consent }}',
+            '{{ default_advertising_consent }}',
+        ], [
+            // Absent on installs that predate the setting, where denied is the safe read
+            $data->get('default_analytics_consent') ?? 'denied',
+            $data->get('default_advertising_consent') ?? 'denied',
+        ], $js);
+
+        return '<script>' . $js . '</script>';
     }
 
     /**

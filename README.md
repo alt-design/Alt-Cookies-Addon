@@ -38,7 +38,9 @@ To configure Google Analytics :
 
 ### Consent mode and third party tags
 
-Consent defaults are written synchronously, immediately before the tag or container loads, based on the visitor's stored choice.
+Consent is written synchronously, immediately before the tag or container loads. The baseline goes out as a consent mode `default`, then a stored choice follows straight after as an `update`, in the same script so nothing can fire in between.
+
+The baseline sent before the visitor answers is denied for everything. If your site has a lawful basis for tracking without consent, the `Google` tab has `Consent Mode Defaults`, where each signal is set to `Granted` or `Denied`, and you should match those to the defaults configured in your GA or Tag Manager property. Note these are not the `By Default` toggles on the `General` tab, which only decide whether a checkbox starts ticked.
 
 Google's own tags respect this out of the box. Third party tags in a container (Meta, TikTok and similar) do not. For those you need to open the tag in Tag Manager and, under `Advanced Settings > Consent Settings`, set `Require additional consent for tag to fire` with `ad_storage`. Without that, Tag Manager fires them regardless of consent state and there's nothing this addon can do about it from outside the container.
 
