@@ -1,10 +1,9 @@
 <?php namespace AltDesign\AltCookiesAddon\Tags;
 
-use Illuminate\Support\Facades\File;
 use Illuminate\Foundation\Vite;
 
 use Statamic\Tags\Tags;
-use Statamic\Filesystem\Manager;
+use Statamic\Facades\Blink;
 
 use AltDesign\AltCookiesAddon\Helpers\Data;
 
@@ -20,7 +19,6 @@ class AltCookies extends Tags
     public function init()
     {
         $data = new Data('settings');
-        $google = new Data('google');
 
         $return = [];
         $return[] = '<script>';
@@ -33,8 +31,39 @@ class AltCookies extends Tags
     }
 
     /**
+     * The {{ AltCookies:consentDefault }} tag.
+     * Declares the consent baseline, then any stored choice, before anything on the page can
+     * track. Called both by scripts.antlers.html and by the google tag, so it only returns the
+     * script the first time it runs in a request.
+     * @return string|array
+     */
+    public function consentDefault()
+    {
+        if (Blink::has('alt-cookies-consent-default')) {
+            return;
+        }
+
+        Blink::put('alt-cookies-consent-default', true);
+
+        $data = new Data('settings');
+
+        $js = file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-consent-default.js');
+        $js = str_replace([
+            '{{ default_analytics_consent }}',
+            '{{ default_advertising_consent }}',
+        ], [
+            // Absent on installs that predate the setting, where denied is the safe read
+            $data->get('default_analytics_consent') ?? 'denied',
+            $data->get('default_advertising_consent') ?? 'denied',
+        ], $js);
+
+        return '<script>' . $js . '</script>';
+    }
+
+    /**
      * The {{ AltCookies:google }} tag.
-     * gtag.js stuff, put the tagID in etc.
+     * gtag.js / Tag Manager stuff, put the tagID in etc.
+     * Self contained, it sets consent itself before loading anything.
      * @return string|array
      */
     public function google()
@@ -48,8 +77,20 @@ class AltCookies extends Tags
         }
 
         $return = [];
-        $return[] = '<script>window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}</script>';
+
+        // Consent has to be set before the tag loads, otherwise tags that aren't consent mode
+        // aware (Meta, TikTok et al in a GTM container) fire before the user has chosen. This
+        // also defines dataLayer and gtag. scripts.antlers.html has normally emitted it already,
+        // in which case this returns nothing, but asking keeps the tag safe used on its own.
+        $return[] = $this->consentDefault();
+
+        // GTM- ids are containers and need the Tag Manager snippet, everything else is a gtag.js tag
+        if (str_starts_with($gtagId, 'GTM-')) {
+            $return[] = sprintf($gConf->get('gtm_js_formatter'), $gtagId);
+
+            return implode(' ', $return);
+        }
+
         $return[] = sprintf($gConf->get('gtag_js_formatter'), $gtagId); // Load gtag.js
         $return[] = sprintf($gConf->get('gtag_js_datalayer'), $gtagId); // Setup datalayer
 
@@ -88,14 +129,6 @@ class AltCookies extends Tags
 
         $return[] = $data->get('necessary');
 
-//        if (isset($_COOKIE['AltCookieAddon']) && $_COOKIE['AltCookieAddon'] == 'accepted') {
-//            if ($data->get('enable_analytics')) {
-//                $return[] = $data->get('analytics');
-//            }
-//            if ($data->get('enable_advertising')) {
-//                $return[] = $data->get('advertising');
-//            }
-//        }
         switch($_COOKIE['AltCookieAddon'] ?? null) {
             case 4:
                 if ($data->get('enable_advertising')) {
