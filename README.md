@@ -10,6 +10,7 @@ This addon features:
 - Custom Cookie Lifetime
 - Necessary, Analytics and Advertising Cookies fields
 - Replaceable default consent popup
+- A cookie scan that reports what your site actually sets, and what it likely sets
 
 ## How to Install
 
@@ -46,6 +47,59 @@ To configure other tracking :
 - WARNING : These fields place what you put in them onto the page. Please check for errors and make sure that the code you put in here is safe.
 
 
+## Scanning for cookies
+
+Writing a cookie policy usually means opening dev tools on a few pages, noting down cookie
+names and then looking each one up. The scan does that part for you.
+
+Go to `Control Panel > Alt Cookies > Scan` and press **Scan this site**. It requests a
+sample of your own pages, as a visitor who accepted every category, and reports two things.
+
+**Observed** cookies were set by the server and read out of the response headers. These are
+confirmed. You will normally see your Laravel session cookie, the CSRF token, and anything
+your host sets, such as Cloudflare's bot management cookie.
+
+**Likely** cookies come from third party services recognised in the page markup and in the
+Necessary, Analytics and Advertising fields on the settings page. A scan cannot run
+JavaScript, so a Meta Pixel or a Hotjar snippet never gets the chance to set anything. What
+the scan can tell you is that the service is there, and what it is documented to set once a
+real browser loads the page.
+
+Around thirty services are recognised, including Google Analytics, Google Ads, Meta, Hotjar,
+LinkedIn, TikTok, Microsoft Clarity, HubSpot, YouTube, Vimeo, Stripe and Intercom. Anything
+it does not recognise is listed on its own rather than quietly dropped, so you know what is
+left to look up.
+
+Two things the scan cannot see, both worth knowing:
+
+- **Tag manager containers.** Google Tag Manager sets no cookies itself, it loads whatever
+  tags are configured in the container. Those have to be checked in Tag Manager.
+- **Cookies set only after an interaction**, such as a video the visitor has to press play on.
+
+### Configuration
+
+The defaults suit most sites. To change them, publish the config:
+
+``` bash
+php artisan vendor:publish --tag=alt-cookies-config
+```
+
+| Key | Default | What it does |
+| --- | --- | --- |
+| `scan.max_pages` | 15 | The most pages one scan will request |
+| `scan.per_collection` | 5 | The most entries taken from any one collection |
+| `scan.timeout` | 10 | Seconds to wait for each page |
+| `scan.verify_ssl` | true | Verify the TLS certificate of the site being scanned |
+| `scan.user_agent` | `AltCookiesScanner/1.0` | Sent so the requests are identifiable in your logs |
+
+Each has an environment variable, so you do not have to publish the config to change one:
+`ALT_COOKIES_SCAN_MAX_PAGES`, `ALT_COOKIES_SCAN_PER_COLLECTION`, `ALT_COOKIES_SCAN_TIMEOUT`
+and `ALT_COOKIES_SCAN_VERIFY_SSL`.
+
+**Local sites served over https** use a development certificate that PHP does not trust, so
+every page in the scan will fail to fetch. Set `ALT_COOKIES_SCAN_VERIFY_SSL=false` in your
+local `.env`, and nowhere else.
+
 ## Advanced Use
 
 To build a custom cookie popup:
@@ -59,6 +113,39 @@ To build a custom cookie popup:
 - The Analytics checkbox requires an id of `alt-cookies-analytics` for the Javascript to hook into
 - The Analytics checkbox requires an id of `alt-cookies-advertising` for the Javascript to hook into
 - If you just want to allow `Necessary` and `All` cookies as your options, then you could hide these checkboxes and give them the `checked` property. They just need to exist.
+
+## Development
+
+The addon is developed against a throwaway Statamic site built from our starter kit, with
+the addon wired in as a Composer path repository so edits are live.
+
+``` bash
+statamic new alt-cookies-dev alt-design/alt-starter-kit
+cd alt-cookies-dev
+composer config repositories.alt-cookies path ../Alt-Cookies-Addon
+composer require "alt-design/alt-cookies:*@dev"
+```
+
+The starter kit pins `php` to `^8.3` in its `composer.json`, but Statamic 6 pulls in Symfony 8
+which needs 8.4. Correct the constraint before serving it locally, or the site will fatal on
+a platform check. It also needs Node 20 or later, because Tailwind 4 ships a native binding
+that will not build on 18.
+
+After changing anything in `resources/css` or `resources/dist`, republish:
+
+``` bash
+php artisan vendor:publish --tag=alt-cookies --force
+```
+
+### Tests
+
+``` bash
+composer install
+composer test
+```
+
+Pest, running against Orchestra Testbench. Tests write collections, entries and users into
+`tests/__fixtures__`, and clean up after themselves.
 
 ## Questions etc
 
