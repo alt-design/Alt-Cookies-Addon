@@ -1,5 +1,8 @@
 <?php namespace AltDesign\AltCookiesAddon;
 
+use AltDesign\AltCookiesAddon\Support\CookieCatalogue;
+use AltDesign\AltCookiesAddon\Support\ScanStore;
+use AltDesign\AltCookiesAddon\Widgets\CookieScan;
 use Illuminate\Support\Str;
 use Facades\Statamic\Version;
 use Statamic\Facades\CP\Nav;
@@ -16,8 +19,20 @@ class ServiceProvider extends AddonServiceProvider
         \AltDesign\AltCookiesAddon\Tags\AltCookies::class,
     ];
 
+    protected $widgets = [
+        CookieScan::class,
+    ];
+
     protected $publishables = [
         __DIR__.'/../resources/dist' => '',
+    ];
+
+    protected $stylesheets = [
+        __DIR__.'/../resources/css/cp.css',
+    ];
+
+    protected $scripts = [
+        __DIR__.'/../resources/js/cp.js',
     ];
 
     protected $vite = [
@@ -28,6 +43,20 @@ class ServiceProvider extends AddonServiceProvider
         ],
         'publicDirectory' => 'resources/dist',
     ];
+
+    /**
+     * The catalogue reads two YAML files and the store is stateless, so neither
+     * needs building more than once per request.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        parent::register();
+
+        $this->app->singleton(CookieCatalogue::class);
+        $this->app->singleton(ScanStore::class);
+    }
 
     /**
      * Add to the nav so it appears in the CP.
