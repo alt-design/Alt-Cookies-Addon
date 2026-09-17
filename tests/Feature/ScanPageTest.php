@@ -76,3 +76,27 @@ it('reports a scan that could not run rather than throwing', function () {
 
     expect(app(ScanStore::class)->get())->toBeNull();
 });
+
+it('offers the scan as cookie policy copy', function () {
+    Http::fake(['*' => Http::response('<html></html>', 200, [
+        'Set-Cookie' => '_ga=GA1.1.1; Max-Age=63072000; path=/',
+    ])]);
+
+    $this->actingAs($this->user)->post(cp_route('alt-cookies-addon.scan.run'));
+
+    $this->actingAs($this->user)
+        ->get(cp_route('alt-cookies-addon.scan.index'))
+        ->assertOk()
+        ->assertSee('Copy as Markdown')
+        ->assertSee('Copy as HTML')
+        ->assertSee('## Cookies we use')
+        ->assertSee('Analytics cookies');
+});
+
+it('sits alongside the settings page rather than on its own', function () {
+    $this->actingAs($this->user)
+        ->get(cp_route('alt-cookies-addon.scan.index'))
+        ->assertOk()
+        ->assertSee(cp_route('alt-cookies-addon.index'))
+        ->assertSee('aria-current="page"', false);
+});

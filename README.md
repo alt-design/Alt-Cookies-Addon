@@ -11,6 +11,7 @@ This addon features:
 - Necessary, Analytics and Advertising Cookies fields
 - Replaceable default consent popup
 - A cookie scan that reports what your site actually sets, and what it likely sets
+- Cookie policy copy generated from the scan
 
 ## How to Install
 
@@ -52,8 +53,9 @@ To configure other tracking :
 Writing a cookie policy usually means opening dev tools on a few pages, noting down cookie
 names and then looking each one up. The scan does that part for you.
 
-Go to `Control Panel > Alt Cookies > Scan` and press **Scan this site**. It requests a
-sample of your own pages, as a visitor who accepted every category, and reports two things.
+Open `Control Panel > Alt Cookies`, switch to the **Scan** tab and press **Scan this site**.
+It requests a sample of your own pages, as a visitor who accepted every category, and
+reports two things.
 
 **Observed** cookies were set by the server and read out of the response headers. These are
 confirmed. You will normally see your Laravel session cookie, the CSRF token, and anything
@@ -75,6 +77,35 @@ Two things the scan cannot see, both worth knowing:
 - **Tag manager containers.** Google Tag Manager sets no cookies itself, it loads whatever
   tags are configured in the container. Those have to be checked in Tag Manager.
 - **Cookies set only after an interaction**, such as a video the visitor has to press play on.
+
+### On the dashboard
+
+There is a dashboard widget showing the last scan and a button to run another. Statamic
+does not let an addon put itself on the dashboard, so add it in `config/statamic/cp.php`:
+
+``` php
+'widgets' => [
+    ['type' => 'alt_cookies_scan', 'width' => 50],
+],
+```
+
+### Cookie policy copy
+
+The Scan tab writes the results up as policy copy, in Markdown or HTML, for pasting into
+your cookie policy page. Observed and likely cookies are merged, because a policy describes
+what may be set rather than what one request happened to see.
+
+Two things worth knowing about how it categorises:
+
+- **A cookie is filed under the category that gates the service setting it, not its own.**
+  LinkedIn documents `bscookie` as necessary because LinkedIn needs it. On a site that only
+  loads LinkedIn once advertising consent is given, it is an advertising cookie, and a
+  policy saying otherwise is wrong.
+- **Anything the scan could not identify is marked** `Describe this cookie before
+  publishing.` rather than left blank, so it cannot go out unnoticed.
+
+This is a starting point and not legal advice. Read it, edit the wording, and keep your own
+intro and contact details around it.
 
 ### Configuration
 

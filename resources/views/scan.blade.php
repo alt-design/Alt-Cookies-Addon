@@ -5,6 +5,11 @@
 @section('content')
     <div class="alt-cookies-scan">
 
+        <nav class="alt-cookies-scan__tabs" aria-label="Alt Cookies">
+            <a href="{{ cp_route('alt-cookies-addon.index') }}">Settings</a>
+            <a href="{{ cp_route('alt-cookies-addon.scan.index') }}" aria-current="page">Scan</a>
+        </nav>
+
         <header class="alt-cookies-scan__header">
             <div>
                 <h1>Cookie Scan</h1>
@@ -216,6 +221,27 @@
             </section>
 
             <section class="alt-cookies-scan__section">
+                <h2>Cookie policy</h2>
+                <p class="alt-cookies-scan__note">
+                    The scan written up as policy copy, observed and likely together, because a policy
+                    describes what may be set rather than what one request happened to see. Paste it into
+                    your cookie policy page and edit the wording around it. Nothing here is legal advice,
+                    and anything the scan could not identify is marked for you to describe.
+                </p>
+
+                <div class="alt-cookies-scan__policy">
+                    <div class="alt-cookies-scan__policy-actions">
+                        <button type="button" class="alt-cookies-scan__button" data-alt-cookies-copy="markdown">Copy as Markdown</button>
+                        <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-copy="html">Copy as HTML</button>
+                        <span class="alt-cookies-scan__copied" data-alt-cookies-copied hidden>Copied</span>
+                    </div>
+
+                    <textarea class="alt-cookies-scan__policy-text" data-alt-cookies-policy="markdown" rows="18" readonly>{{ $policyMarkdown }}</textarea>
+                    <textarea data-alt-cookies-policy="html" hidden readonly>{{ $policyHtml }}</textarea>
+                </div>
+            </section>
+
+            <section class="alt-cookies-scan__section">
                 <details class="alt-cookies-scan__panel">
                     <summary>Pages requested in this scan</summary>
                     <ul class="alt-cookies-scan__pages">
@@ -231,4 +257,33 @@
         @endif
 
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('click', function (event) {
+            const button = event.target.closest('[data-alt-cookies-copy]');
+
+            if (! button) {
+                return;
+            }
+
+            const format = button.getAttribute('data-alt-cookies-copy');
+            const source = document.querySelector('[data-alt-cookies-policy="' + format + '"]');
+            const confirmation = document.querySelector('[data-alt-cookies-copied]');
+
+            if (! source) {
+                return;
+            }
+
+            navigator.clipboard.writeText(source.value).then(function () {
+                if (! confirmation) {
+                    return;
+                }
+
+                confirmation.hidden = false;
+                setTimeout(function () { confirmation.hidden = true; }, 2000);
+            });
+        });
+    </script>
 @endsection

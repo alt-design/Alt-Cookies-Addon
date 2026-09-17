@@ -385,3 +385,171 @@ html.dark .alt-cookies-scan__badge--unknown { color: #c084fc; }
         padding: 0.25rem 0.875rem;
     }
 }
+
+/* Tab strip on the scan page, standing in for the publish form tabs on the settings page. */
+
+.alt-cookies-scan__tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--acs-border);
+}
+
+.alt-cookies-scan__tabs a {
+    padding: 0.5rem 0.875rem;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--acs-muted);
+    text-decoration: none;
+}
+
+.alt-cookies-scan__tabs a:hover {
+    color: var(--acs-text);
+}
+
+.alt-cookies-scan__tabs a[aria-current="page"] {
+    color: var(--acs-text);
+    border-bottom-color: var(--acs-accent);
+}
+
+/* Cookie policy block */
+
+.alt-cookies-scan__policy {
+    padding: 1.25rem;
+    border: 1px solid var(--acs-border);
+    border-radius: 0.5rem;
+    background: var(--acs-bg);
+}
+
+.alt-cookies-scan__policy-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.alt-cookies-scan__copied {
+    font-size: 0.8125rem;
+    color: var(--acs-success);
+}
+
+.alt-cookies-scan__policy-text {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--acs-border);
+    border-radius: 0.375rem;
+    background: var(--acs-subtle);
+    color: var(--acs-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+/*
+ * Dashboard widget. It renders outside .alt-cookies-scan, so it carries its own
+ * copy of the palette rather than inheriting one.
+ */
+
+.alt-cookies-widget {
+    --acw-border: var(--theme-color-content-border, #e4e4e7);
+    --acw-muted: var(--theme-color-gray-500, #71717a);
+    --acw-text: var(--theme-color-gray-900, #18181b);
+    --acw-accent: var(--theme-color-primary, #4338ca);
+    --acw-bg: var(--theme-color-content-bg, #ffffff);
+    --acw-danger: var(--theme-color-danger, #dc2626);
+
+    padding: 1.25rem;
+    border: 1px solid var(--acw-border);
+    border-radius: 0.5rem;
+    background: var(--acw-bg);
+    color: var(--acw-text);
+}
+
+html.dark .alt-cookies-widget {
+    --acw-bg: var(--theme-color-content-bg, #18181b);
+    --acw-border: var(--theme-color-content-border, #09090b);
+    --acw-muted: var(--theme-color-gray-400, #a1a1aa);
+    --acw-text: var(--theme-color-gray-100, #f4f4f5);
+}
+
+.alt-cookies-widget__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.alt-cookies-widget h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--acw-text);
+}
+
+.alt-cookies-widget__button {
+    padding: 0.375rem 0.75rem;
+    border: 0;
+    border-radius: 0.375rem;
+    background: var(--acw-accent);
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.alt-cookies-widget__button:hover {
+    filter: brightness(1.1);
+}
+
+.alt-cookies-widget__stats {
+    display: flex;
+    gap: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.alt-cookies-widget__value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.alt-cookies-widget__label {
+    display: block;
+    margin-top: 0.125rem;
+    font-size: 0.75rem;
+    color: var(--acw-muted);
+}
+
+.alt-cookies-widget__empty,
+.alt-cookies-widget__foot {
+    margin: 0 0 0.75rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--acw-muted);
+}
+
+.alt-cookies-widget__warning {
+    margin: 0 0 0.75rem;
+    padding-left: 0.625rem;
+    border-left: 2px solid var(--acw-danger);
+    font-size: 0.8125rem;
+    color: var(--acw-muted);
+}
+
+.alt-cookies-widget__link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--acw-accent);
+}
+
+html.dark .alt-cookies-widget__link {
+    color: var(--theme-color-ui-accent-text, #818cf8);
+}
