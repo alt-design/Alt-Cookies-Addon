@@ -234,6 +234,7 @@ class CookieScanner
 
                 return [
                     'name' => $name,
+                    'source' => 'header',
                     'known' => (bool) $known,
                     'provider' => $known['provider'] ?? 'Unknown',
                     'category' => $known['category'] ?? 'unknown',
@@ -246,6 +247,68 @@ class CookieScanner
             })
             ->sortBy($this->byCategoryThenName())
             ->values();
+    }
+
+    /**
+     * Fold cookies seen in a real browser into a stored scan.
+     *
+     * A browser only hands over names and values through document.cookie, so these
+     * carry no attributes and no lifetime. What they do carry is certainty: the
+     * cookie was set, rather than inferred from a script being on the page.
+     *
+     * Each entry is expected to be ['name' => string, 'url' => string|null], but the
+     * list arrives from the control panel over fetch, so it is checked rather than
+     * trusted.
+     *
+     * @param  array  $results
+     * @param  array<int, mixed>  $cookies
+     * @return array
+     */
+    public function mergeBrowserObservations(array $results, array $cookies): array
+    {
+        $seen = collect($cookies)
+            ->filter(fn ($cookie) => is_array($cookie) && ! empty($cookie['name']))
+            ->groupBy('name');
+
+        $observed = collect($results['observed'] ?? [])->keyBy('name');
+
+        foreach ($seen as $name => $group) {
+            $urls = $group->pluck('url')->filter()->unique()->values()->all();
+
+            if ($existing = $observed->get($name)) {
+                $observed->put($name, array_merge($existing, [
+                    'source' => 'both',
+                    'urls' => collect($existing['urls'])->merge($urls)->unique()->values()->all(),
+                ]));
+
+                continue;
+            }
+
+            $known = $this->catalogue->identify($name);
+
+            $observed->put($name, [
+                'name' => $name,
+                'source' => 'browser',
+                'known' => (bool) $known,
+                'provider' => $known['provider'] ?? 'Unknown',
+                'category' => $known['category'] ?? 'unknown',
+                'duration' => $known['duration'] ?? 'Unknown',
+                'purpose' => $known['purpose'] ?? '',
+                'observed_duration' => 'Not visible to a browser scan',
+                'flags' => [],
+                'urls' => $urls,
+            ]);
+        }
+
+        $observed = $observed->values()->sortBy($this->byCategoryThenName())->values();
+
+        $results['observed'] = $observed->all();
+        $results['browser_scanned_at'] = Carbon::now()->toIso8601String();
+        $results['counts']['observed'] = $observed->count();
+        $results['counts']['unknown'] = $observed->where('known', false)->count();
+        $results['counts']['browser'] = $observed->whereIn('source', ['browser', 'both'])->count();
+
+        return $results;
     }
 
     /**

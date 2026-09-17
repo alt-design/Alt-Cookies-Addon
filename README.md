@@ -63,10 +63,9 @@ confirmed. You will normally see your Laravel session cookie, the CSRF token, an
 your host sets, such as Cloudflare's bot management cookie.
 
 **Likely** cookies come from third party services recognised in the page markup and in the
-Necessary, Analytics and Advertising fields on the settings page. A scan cannot run
-JavaScript, so a Meta Pixel or a Hotjar snippet never gets the chance to set anything. What
-the scan can tell you is that the service is there, and what it is documented to set once a
-real browser loads the page.
+Necessary, Analytics and Advertising fields on the settings page. The scan tells you the
+service is there, and what it is documented to set. Run a deep scan and most of these move
+into Observed.
 
 Around thirty services are recognised, including Google Analytics, Google Ads, Meta, Hotjar,
 LinkedIn, TikTok, Microsoft Clarity, HubSpot, YouTube, Vimeo, Stripe and Intercom. Anything
@@ -78,6 +77,32 @@ Two things the scan cannot see, both worth knowing:
 - **Tag manager containers.** Google Tag Manager sets no cookies itself, it loads whatever
   tags are configured in the container. Those have to be checked in Tag Manager.
 - **Cookies set only after an interaction**, such as a video the visitor has to press play on.
+
+### Deep scan
+
+The scan above reads response headers, so it sees what the server sets and nothing else.
+Everything a tracking snippet sets is inferred rather than observed.
+
+**Deep scan** observes them. It loads each page in the browser you are using, lets the
+scripts run, and reads the cookies they set. The control panel is same-origin with the front
+end, so anything the site sets on its own domain is readable.
+
+On a typical site that moves Google Analytics, Hotjar, Meta, Microsoft Clarity and Stripe
+cookies out of the likely list and into the observed one.
+
+Two things it cannot do:
+
+- **Cookies set on another company's domain stay inferred.** DoubleClick's `IDE`, Facebook's
+  `fr`, LinkedIn's `bcookie`. No page can read those, by design.
+- **A browser cannot see a cookie's attributes**, only its name and value. Those rows show
+  the documented lifetime rather than an observed one, and say so.
+
+**Running one has a cost, and the button says so before you press it.** The pages load as a
+visitor who accepted everything, so the tracking runs for real: your analytics records a
+visit for each page, from you, and the cookies are set in your browser. The cookies are
+cleaned up afterwards and your previous consent choice is restored. The analytics hits
+cannot be taken back. That is why it is a separate button rather than part of the ordinary
+scan.
 
 ### On the dashboard
 

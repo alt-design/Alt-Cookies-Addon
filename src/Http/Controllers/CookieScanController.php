@@ -2,6 +2,7 @@
 
 use AltDesign\AltCookiesAddon\Support\CookieScanner;
 use AltDesign\AltCookiesAddon\Support\ScanStore;
+use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,6 +60,40 @@ class CookieScanController
         return $request->expectsJson()
             ? response()->json(['cleared' => true])
             : $this->back($request)->with('success', 'Scan results cleared.');
+    }
+
+    /**
+     * Record cookies a deep scan saw in the browser.
+     *
+     * Names arrive from the control panel rather than from the site, so they are
+     * validated and capped before anything is written, and urls are only accepted
+     * if they were in the scan this is adding to.
+     *
+     * @param  Request  $request
+     * @param  CookieScanner  $scanner
+     * @return JsonResponse
+     */
+    public function observed(Request $request, CookieScanner $scanner): JsonResponse
+    {
+        $results = $this->store->get();
+
+        if (! $results) {
+            return response()->json(['message' => 'Run a scan before recording what a browser saw.'], 409);
+        }
+
+        $urls = collect($results['pages'] ?? [])->pluck('url')->filter()->all();
+
+        $validated = $request->validate([
+            'cookies' => ['present', 'array', 'max:500'],
+            'cookies.*.name' => ['required', 'string', 'max:255', 'regex:/^[^\s,;=]+$/'],
+            'cookies.*.url' => ['nullable', 'string', Rule::in($urls)],
+        ]);
+
+        $merged = $scanner->mergeBrowserObservations($results, $validated['cookies']);
+
+        $this->store->put($merged);
+
+        return response()->json(['counts' => $merged['counts']]);
     }
 
     /**

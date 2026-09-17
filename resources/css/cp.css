@@ -536,3 +536,35 @@ html.dark .alt-cookies-widget {
 html.dark .alt-cookies-widget__link {
     color: var(--theme-color-ui-accent-text, #818cf8);
 }
+
+/* How a cookie was seen, and the deep scan explainer */
+
+.alt-cookies-scan__seen {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.6875rem;
+    color: var(--acs-muted);
+}
+
+.alt-cookies-scan__seen--browser,
+.alt-cookies-scan__seen--both {
+    color: var(--acs-success);
+}
+
+.alt-cookies-scan__deep {
+    margin-bottom: 1.5rem;
+}
+
+.alt-cookies-scan__deep summary {
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.alt-cookies-scan__deep p {
+    max-width: 52rem;
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--acs-muted);
+}

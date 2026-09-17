@@ -2,7 +2,9 @@
      data-alt-cookies-panel
      data-alt-cookies-csrf="{{ csrf_token() }}"
      data-alt-cookies-scan-url="{{ cp_route('alt-cookies-addon.scan.run') }}"
-     data-alt-cookies-clear-url="{{ cp_route('alt-cookies-addon.scan.clear') }}">
+     data-alt-cookies-clear-url="{{ cp_route('alt-cookies-addon.scan.clear') }}"
+     data-alt-cookies-observed-url="{{ cp_route('alt-cookies-addon.scan.observed') }}"
+     data-alt-cookies-pages="{{ $results ? json_encode(collect($results['pages'])->where('ok', true)->pluck('url')->values()) : '[]' }}">
 
     <header class="alt-cookies-scan__header">
         <div>
@@ -15,12 +17,35 @@
         <div class="alt-cookies-scan__actions">
             @if ($results)
                 <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-action="clear">Clear results</button>
+                <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-action="deep">Deep scan</button>
             @endif
             <button type="button" class="alt-cookies-scan__button" data-alt-cookies-action="scan">{{ $results ? 'Scan again' : 'Scan this site' }}</button>
         </div>
     </header>
 
     <p class="alt-cookies-scan__flash alt-cookies-scan__flash--error" data-alt-cookies-error hidden></p>
+    <p class="alt-cookies-scan__flash" data-alt-cookies-status hidden></p>
+
+    @if ($results)
+        <details class="alt-cookies-scan__panel alt-cookies-scan__deep">
+            <summary>What a deep scan does before you run one</summary>
+            <p>
+                The scan above reads response headers, so it sees what the server sets and nothing
+                else. A deep scan loads each page in this browser, lets the scripts run, and reads
+                the cookies they set. That is the only way to observe them rather than infer them.
+            </p>
+            <p>
+                It loads the pages as a visitor who accepted everything, so the tracking runs for
+                real. Your analytics will record a visit for each page, from you, and the cookies
+                will be set in this browser. The cookies are cleaned up afterwards. The analytics
+                hits cannot be taken back.
+            </p>
+            <p class="alt-cookies-scan__hint">
+                Cookies set on another company's domain, such as DoubleClick or Facebook, stay in
+                the likely list either way. A page cannot read those.
+            </p>
+        </details>
+    @endif
 
         @if (! $results)
             <div class="alt-cookies-scan__panel alt-cookies-scan__empty">
@@ -90,12 +115,13 @@
             <section class="alt-cookies-scan__section">
                 <h2>Observed</h2>
                 <p class="alt-cookies-scan__note">
-                    Set by the server, seen in the response headers. These are confirmed rather than inferred.
+                    Cookies a scan has actually seen, either in a response header or in the browser during a
+                    deep scan. Confirmed rather than inferred.
                 </p>
 
                 @if ($observed->isEmpty())
                     <div class="alt-cookies-scan__panel">
-                        <p>No cookies were set in any response. Everything on this site is being set by JavaScript, if anything is being set at all.</p>
+                        <p>No cookies were seen. Nothing is set in a response header, and a deep scan has either not been run or found nothing.</p>
                     </div>
                 @else
                     <table class="alt-cookies-scan__table">
@@ -116,6 +142,13 @@
                                         @if ($cookie['flags'])
                                             <span class="alt-cookies-scan__flags">{{ implode(' · ', $cookie['flags']) }}</span>
                                         @endif
+                                        <span class="alt-cookies-scan__seen alt-cookies-scan__seen--{{ $cookie['source'] ?? 'header' }}">
+                                            @switch($cookie['source'] ?? 'header')
+                                                @case('browser') Seen in the browser @break
+                                                @case('both') Seen in a header and in the browser @break
+                                                @default Seen in a response header
+                                            @endswitch
+                                        </span>
                                         <details class="alt-cookies-scan__where">
                                             <summary>{{ count($cookie['urls']) }} {{ \Illuminate\Support\Str::plural('page', count($cookie['urls'])) }}</summary>
                                             <ul>
@@ -149,10 +182,18 @@
 
             <section class="alt-cookies-scan__section">
                 <h2>Likely</h2>
+                @php
+                    $observedNames = $observed->pluck('name');
+                    $isObserved = fn (string $name) => $observedNames->contains(
+                        fn (string $seen) => $seen === $name || \Illuminate\Support\Str::is($name, $seen)
+                    );
+                @endphp
+
                 <p class="alt-cookies-scan__note">
-                    Third party services found in the page markup and in the Alt Cookies script fields. A scan
-                    cannot run JavaScript, so these cookies were not observed. They are what each service is
-                    documented to set once a real browser loads the page.
+                    Third party services found in the page markup and in the Alt Cookies script fields, with the
+                    cookies each is documented to set. Anything a scan has actually seen is listed above instead.
+                    What is left here either needs a deep scan to observe, or is set on the service's own domain
+                    where no page can read it.
                 </p>
 
                 @if ($vendors->isEmpty())
@@ -182,10 +223,22 @@
                                 </ul>
                             </details>
 
-                            @if ($vendor['cookies'])
+                            @php
+                                $unobserved = collect($vendor['cookies'])->reject(fn (array $c) => $isObserved($c['name']));
+                                $alreadySeen = count($vendor['cookies']) - $unobserved->count();
+                            @endphp
+
+                            @if ($alreadySeen)
+                                <p class="alt-cookies-scan__hint">
+                                    {{ $alreadySeen }} of this service's {{ \Illuminate\Support\Str::plural('cookie', count($vendor['cookies'])) }}
+                                    {{ $alreadySeen === 1 ? 'has' : 'have' }} been observed and {{ $alreadySeen === 1 ? 'is' : 'are' }} listed above.
+                                </p>
+                            @endif
+
+                            @if ($unobserved->isNotEmpty())
                                 <table class="alt-cookies-scan__table alt-cookies-scan__table--nested">
                                     <tbody>
-                                        @foreach ($vendor['cookies'] as $cookie)
+                                        @foreach ($unobserved as $cookie)
                                             <tr>
                                                 <td><code class="alt-cookies-scan__name">{{ $cookie['name'] }}</code></td>
                                                 <td>{{ $cookie['duration'] }}</td>

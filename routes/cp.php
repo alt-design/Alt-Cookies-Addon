@@ -10,4 +10,5 @@ Route::group(['middleware' => ['statamic.cp.authenticated', 'can:view alt-cookie
     Route::get('/alt-design/alt-cookies/scan', 'CookieScanController@redirectToTab')->name('alt-cookies-addon.scan.index');
     Route::post('/alt-design/alt-cookies/scan', 'CookieScanController@scan')->name('alt-cookies-addon.scan.run');
     Route::post('/alt-design/alt-cookies/scan/clear', 'CookieScanController@clear')->name('alt-cookies-addon.scan.clear');
+    Route::post('/alt-design/alt-cookies/scan/observed', 'CookieScanController@observed')->name('alt-cookies-addon.scan.observed');
 });
