@@ -54,8 +54,9 @@ Writing a cookie policy usually means opening dev tools on a few pages, noting d
 names and then looking each one up. The scan does that part for you.
 
 Open `Control Panel > Alt Cookies`, switch to the **Scan** tab and press **Scan this site**.
-It requests a sample of your own pages, as a visitor who accepted every category, and
-reports two things.
+The tab sits alongside General and Google, on the same page as the rest of the addon's
+settings. It requests a sample of your own pages, as a visitor who accepted every category,
+and reports two things.
 
 **Observed** cookies were set by the server and read out of the response headers. These are
 confirmed. You will normally see your Laravel session cookie, the CSRF token, and anything

@@ -79,10 +79,10 @@ it('returns to the dashboard when the scan was started from the widget', functio
         ->assertRedirect(cp_route('dashboard'));
 });
 
-it('returns to the scan page when the scan was started there', function () {
+it('returns to the scan tab when the scan was started there', function () {
     Http::fake(['*' => Http::response('<html></html>', 200)]);
 
     $this->actingAs($this->user)
         ->post(cp_route('alt-cookies-addon.scan.run'))
-        ->assertRedirect(cp_route('alt-cookies-addon.scan.index'));
+        ->assertRedirect(cp_route('alt-cookies-addon.index').'#scan');
 });

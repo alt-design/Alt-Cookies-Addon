@@ -1,15 +1,18 @@
 <?php namespace AltDesign\AltCookiesAddon\Http\Controllers;
 
 use AltDesign\AltCookiesAddon\Support\CookieScanner;
-use AltDesign\AltCookiesAddon\Support\PolicyWriter;
 use AltDesign\AltCookiesAddon\Support\ScanStore;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Throwable;
 
 /**
  * Class CookieScanController
+ *
+ * The report itself lives on the Alt Cookies settings page, in a tab of its own.
+ * This handles running and clearing a scan, from the scan tab over fetch and from
+ * the dashboard widget as an ordinary form post.
  *
  * @package  AltDesign\AltCookiesAddon
  * @license  Copyright (C) Alt Design Limited - All Rights Reserved - licensed under the MIT license
@@ -17,59 +20,61 @@ use Throwable;
  */
 class CookieScanController
 {
-    public function __construct(
-        protected ScanStore $store,
-        protected PolicyWriter $policy
-    ) {
-    }
-
-    /**
-     * @return View
-     */
-    public function index(): View
+    public function __construct(protected ScanStore $store)
     {
-        $results = $this->store->get();
-
-        return view('alt-cookies::scan', [
-            'results' => $results,
-            'policyMarkdown' => $results ? $this->policy->markdown($results) : null,
-            'policyHtml' => $results ? $this->policy->html($results) : null,
-        ]);
     }
 
     /**
      * @param  Request  $request
      * @param  CookieScanner  $scanner
-     * @return RedirectResponse
+     * @return JsonResponse|RedirectResponse
      */
-    public function scan(Request $request, CookieScanner $scanner): RedirectResponse
+    public function scan(Request $request, CookieScanner $scanner)
     {
         try {
             $results = $scanner->scan();
         } catch (Throwable $e) {
-            return $this->back($request)
-                ->with('error', 'The scan could not be completed: '.$e->getMessage());
+            $message = 'The scan could not be completed: '.$e->getMessage();
+
+            return $request->expectsJson()
+                ? response()->json(['message' => $message], 500)
+                : $this->back($request)->with('error', $message);
         }
 
         $this->store->put($results);
 
-        return $this->back($request)->with('success', 'Scan complete.');
+        return $request->expectsJson()
+            ? response()->json(['counts' => $results['counts']])
+            : $this->back($request)->with('success', 'Scan complete.');
     }
 
     /**
-     * @return RedirectResponse
+     * @param  Request  $request
+     * @return JsonResponse|RedirectResponse
      */
-    public function clear(): RedirectResponse
+    public function clear(Request $request)
     {
         $this->store->clear();
 
-        return redirect(cp_route('alt-cookies-addon.scan.index'))
-            ->with('success', 'Scan results cleared.');
+        return $request->expectsJson()
+            ? response()->json(['cleared' => true])
+            : $this->back($request)->with('success', 'Scan results cleared.');
     }
 
     /**
-     * Scans started from the dashboard widget return to the dashboard, so the
-     * button does not move the reader somewhere they did not ask to go.
+     * The scan used to have a page of its own. Anything still pointing at it lands
+     * on the tab that replaced it.
+     *
+     * @return RedirectResponse
+     */
+    public function redirectToTab(): RedirectResponse
+    {
+        return redirect(cp_route('alt-cookies-addon.index').'#scan');
+    }
+
+    /**
+     * Scans started from the dashboard widget return to the dashboard, so the button
+     * does not move the reader somewhere they did not ask to go.
      *
      * @param  Request  $request
      * @return RedirectResponse
@@ -78,6 +83,6 @@ class CookieScanController
     {
         return redirect($request->input('return') === 'dashboard'
             ? cp_route('dashboard')
-            : cp_route('alt-cookies-addon.scan.index'));
+            : cp_route('alt-cookies-addon.index').'#scan');
     }
 }

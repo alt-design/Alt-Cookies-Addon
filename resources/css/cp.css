@@ -22,6 +22,17 @@
     color: var(--acs-text);
 }
 
+/* Inside the publish form the card supplies the frame, so the panel drops its own. */
+.alt-cookies-scan--panel {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.alt-cookies-scan--panel .alt-cookies-scan__header {
+    margin-bottom: 1.25rem;
+}
+
 html.dark .alt-cookies-scan {
     --acs-bg: var(--theme-color-content-bg, #18181b);
     --acs-border: var(--theme-color-content-border, #09090b);
@@ -384,34 +395,6 @@ html.dark .alt-cookies-scan__badge--unknown { color: #c084fc; }
         border-bottom: 0;
         padding: 0.25rem 0.875rem;
     }
-}
-
-/* Tab strip on the scan page, standing in for the publish form tabs on the settings page. */
-
-.alt-cookies-scan__tabs {
-    display: flex;
-    gap: 0.25rem;
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--acs-border);
-}
-
-.alt-cookies-scan__tabs a {
-    padding: 0.5rem 0.875rem;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--acs-muted);
-    text-decoration: none;
-}
-
-.alt-cookies-scan__tabs a:hover {
-    color: var(--acs-text);
-}
-
-.alt-cookies-scan__tabs a[aria-current="page"] {
-    color: var(--acs-text);
-    border-bottom-color: var(--acs-accent);
 }
 
 /* Cookie policy block */

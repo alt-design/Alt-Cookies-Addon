@@ -31,6 +31,10 @@ class ServiceProvider extends AddonServiceProvider
         __DIR__.'/../resources/css/cp.css',
     ];
 
+    protected $scripts = [
+        __DIR__.'/../resources/js/cp.js',
+    ];
+
     protected $vite = [
         'input' => [
             'resources/js/alt-cookies-addon.js',

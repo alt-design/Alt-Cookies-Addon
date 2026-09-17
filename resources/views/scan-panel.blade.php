@@ -1,46 +1,26 @@
-@extends('statamic::layout')
+<div class="alt-cookies-scan alt-cookies-scan--panel"
+     data-alt-cookies-panel
+     data-alt-cookies-csrf="{{ csrf_token() }}"
+     data-alt-cookies-scan-url="{{ cp_route('alt-cookies-addon.scan.run') }}"
+     data-alt-cookies-clear-url="{{ cp_route('alt-cookies-addon.scan.clear') }}">
 
-@section('title', 'Cookie Scan')
+    <header class="alt-cookies-scan__header">
+        <div>
+            <p class="alt-cookies-scan__lede">
+                Requests a sample of this site's pages as a visitor who accepted every category, reports
+                the cookies those pages set, and names the third party services it recognises.
+            </p>
+        </div>
 
-@section('content')
-    <div class="alt-cookies-scan">
+        <div class="alt-cookies-scan__actions">
+            @if ($results)
+                <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-action="clear">Clear results</button>
+            @endif
+            <button type="button" class="alt-cookies-scan__button" data-alt-cookies-action="scan">{{ $results ? 'Scan again' : 'Scan this site' }}</button>
+        </div>
+    </header>
 
-        <nav class="alt-cookies-scan__tabs" aria-label="Alt Cookies">
-            <a href="{{ cp_route('alt-cookies-addon.index') }}">Settings</a>
-            <a href="{{ cp_route('alt-cookies-addon.scan.index') }}" aria-current="page">Scan</a>
-        </nav>
-
-        <header class="alt-cookies-scan__header">
-            <div>
-                <h1>Cookie Scan</h1>
-                <p class="alt-cookies-scan__lede">
-                    Requests a sample of this site's pages as a visitor who accepted every category, reports
-                    the cookies those pages set, and names the third party services it recognises.
-                </p>
-            </div>
-
-            <div class="alt-cookies-scan__actions">
-                @if ($results)
-                    <form method="POST" action="{{ cp_route('alt-cookies-addon.scan.clear') }}">
-                        @csrf
-                        <button type="submit" class="alt-cookies-scan__button alt-cookies-scan__button--quiet">Clear results</button>
-                    </form>
-                @endif
-
-                <form method="POST" action="{{ cp_route('alt-cookies-addon.scan.run') }}">
-                    @csrf
-                    <button type="submit" class="alt-cookies-scan__button">{{ $results ? 'Scan again' : 'Scan this site' }}</button>
-                </form>
-            </div>
-        </header>
-
-        @if (session('error'))
-            <p class="alt-cookies-scan__flash alt-cookies-scan__flash--error">{{ session('error') }}</p>
-        @endif
-
-        @if (session('success'))
-            <p class="alt-cookies-scan__flash alt-cookies-scan__flash--success">{{ session('success') }}</p>
-        @endif
+    <p class="alt-cookies-scan__flash alt-cookies-scan__flash--error" data-alt-cookies-error hidden></p>
 
         @if (! $results)
             <div class="alt-cookies-scan__panel alt-cookies-scan__empty">
@@ -256,34 +236,4 @@
             </section>
         @endif
 
-    </div>
-@endsection
-
-@section('scripts')
-    <script>
-        document.addEventListener('click', function (event) {
-            const button = event.target.closest('[data-alt-cookies-copy]');
-
-            if (! button) {
-                return;
-            }
-
-            const format = button.getAttribute('data-alt-cookies-copy');
-            const source = document.querySelector('[data-alt-cookies-policy="' + format + '"]');
-            const confirmation = document.querySelector('[data-alt-cookies-copied]');
-
-            if (! source) {
-                return;
-            }
-
-            navigator.clipboard.writeText(source.value).then(function () {
-                if (! confirmation) {
-                    return;
-                }
-
-                confirmation.hidden = false;
-                setTimeout(function () { confirmation.hidden = true; }, 2000);
-            });
-        });
-    </script>
-@endsection
+</div>

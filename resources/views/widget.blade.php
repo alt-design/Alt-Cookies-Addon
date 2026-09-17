@@ -36,7 +36,7 @@
         <p class="alt-cookies-widget__foot">Last scanned {{ \Illuminate\Support\Carbon::parse($results['scanned_at'])->diffForHumans() }} across {{ $results['counts']['pages'] }} {{ \Illuminate\Support\Str::plural('page', $results['counts']['pages']) }}.</p>
     @endif
 
-    <a class="alt-cookies-widget__link" href="{{ cp_route('alt-cookies-addon.scan.index') }}">
-        {{ $results ? 'View full results' : 'Open the scan page' }}
+    <a class="alt-cookies-widget__link" href="{{ cp_route('alt-cookies-addon.index') }}#scan">
+        {{ $results ? 'View full results' : 'Open the scan tab' }}
     </a>
 </div>
