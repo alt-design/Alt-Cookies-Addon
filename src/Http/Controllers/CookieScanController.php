@@ -45,7 +45,11 @@ class CookieScanController
         $this->store->put($results);
 
         return $request->expectsJson()
-            ? response()->json(['counts' => $results['counts']])
+            ? response()->json([
+                'counts' => $results['counts'],
+                'pages' => collect($results['pages'])->where('ok', true)->pluck('url')->values(),
+                'runInBrowser' => (bool) config('alt-cookies.scan.run_in_browser', true),
+            ])
             : $this->back($request)->with('success', 'Scan complete.');
     }
 
@@ -87,9 +91,15 @@ class CookieScanController
             'cookies' => ['present', 'array', 'max:500'],
             'cookies.*.name' => ['required', 'string', 'max:255', 'regex:/^[^\s,;=]+$/'],
             'cookies.*.url' => ['nullable', 'string', Rule::in($urls)],
+            'blocked' => ['sometimes', 'array', 'max:100'],
+            'blocked.*' => ['string', Rule::in($urls)],
         ]);
 
-        $merged = $scanner->mergeBrowserObservations($results, $validated['cookies']);
+        $merged = $scanner->mergeBrowserObservations(
+            $results,
+            $validated['cookies'],
+            $validated['blocked'] ?? []
+        );
 
         $this->store->put($merged);
 

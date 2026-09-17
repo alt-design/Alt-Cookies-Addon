@@ -262,9 +262,10 @@ class CookieScanner
      *
      * @param  array  $results
      * @param  array<int, mixed>  $cookies
+     * @param  array<int, string>  $blocked  Pages the browser could not load
      * @return array
      */
-    public function mergeBrowserObservations(array $results, array $cookies): array
+    public function mergeBrowserObservations(array $results, array $cookies, array $blocked = []): array
     {
         $seen = collect($cookies)
             ->filter(fn ($cookie) => is_array($cookie) && ! empty($cookie['name']))
@@ -304,9 +305,11 @@ class CookieScanner
 
         $results['observed'] = $observed->all();
         $results['browser_scanned_at'] = Carbon::now()->toIso8601String();
+        $results['browser_blocked'] = array_values(array_unique($blocked));
         $results['counts']['observed'] = $observed->count();
         $results['counts']['unknown'] = $observed->where('known', false)->count();
         $results['counts']['browser'] = $observed->whereIn('source', ['browser', 'both'])->count();
+        $results['counts']['blocked'] = count($results['browser_blocked']);
 
         return $results;
     }

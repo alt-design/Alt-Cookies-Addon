@@ -154,9 +154,20 @@
 
                 done = true;
 
+                // A page refused through X-Frame-Options or frame-ancestors still fires
+                // load, but its document is unreachable. Reading it is the only way to
+                // tell a refusal from a page that simply set nothing.
+                let readable = false;
+
+                try {
+                    readable = !! (frame.contentDocument && frame.contentDocument.body);
+                } catch (error) {
+                    readable = false;
+                }
+
                 settle().then(function () {
                     frame.remove();
-                    resolve();
+                    resolve(readable);
                 });
             }
 
@@ -168,33 +179,19 @@
         });
     }
 
-    async function deepScan(button) {
-        const container = panel();
-
-        if (! container) {
-            return;
-        }
-
-        let pages = [];
-
-        try {
-            pages = JSON.parse(container.getAttribute('data-alt-cookies-pages') || '[]');
-        } catch (error) {
-            pages = [];
-        }
-
-        if (! pages.length) {
-            showError('There are no pages to visit. Run a scan first.');
-
-            return;
-        }
-
-        const original = button.textContent;
+    /**
+     * The second half of a scan: load each page here and watch what its scripts set.
+     *
+     * Consent is granted for the duration so the scripts run, then put back. Anything
+     * the visits caused is removed afterwards, so the scan does not leave the operator
+     * carrying the site's tracking cookies.
+     */
+    async function browserPass(pages, button) {
         const previousConsent = readCookie(CONSENT_COOKIE);
         const found = [];
         const caused = [];
+        const blocked = [];
 
-        button.disabled = true;
         writeCookie(CONSENT_COOKIE, FULL_CONSENT);
 
         // Taken after granting consent, so the cookie recording that choice is not
@@ -203,10 +200,14 @@
 
         try {
             for (let i = 0; i < pages.length; i++) {
-                button.textContent = 'Visiting ' + (i + 1) + ' of ' + pages.length;
+                button.textContent = 'Loading ' + (i + 1) + ' of ' + pages.length;
                 say('Loading ' + pages[i] + ' and letting its scripts run.');
 
-                await visit(pages[i]);
+                const readable = await visit(pages[i]);
+
+                if (! readable) {
+                    blocked.push(pages[i]);
+                }
 
                 cookieNames().forEach(function (name) {
                     if (before.indexOf(name) !== -1 || caused.indexOf(name) !== -1) {
@@ -227,20 +228,55 @@
             }
         }
 
-        say('Recording ' + found.length + ' ' + (found.length === 1 ? 'cookie' : 'cookies') + '.');
+        return { cookies: found, blocked: blocked };
+    }
+
+    async function runScan(button) {
+        const container = panel();
+
+        if (! container) {
+            return;
+        }
+
+        const original = button.textContent;
+
+        button.disabled = true;
+        button.textContent = 'Requesting pages';
+        say('Requesting the pages and reading their response headers.');
 
         try {
-            const response = await fetch(container.getAttribute('data-alt-cookies-observed-url'), {
+            const response = await fetch(container.getAttribute('data-alt-cookies-scan-url'), {
                 method: 'POST',
                 credentials: 'same-origin',
-                headers: Object.assign({ 'Content-Type': 'application/json' }, headers(container)),
-                body: JSON.stringify({ cookies: found }),
+                headers: headers(container),
             });
 
             const body = await response.json();
 
             if (! response.ok) {
-                throw new Error(body.message || 'The results could not be recorded.');
+                throw new Error(body.message || 'The scan could not be completed.');
+            }
+
+            const pages = body.pages || [];
+
+            if (body.runInBrowser && pages.length) {
+                const observations = await browserPass(pages, button);
+
+                button.textContent = 'Recording';
+                say('Recording what the pages set.');
+
+                const recorded = await fetch(container.getAttribute('data-alt-cookies-observed-url'), {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: Object.assign({ 'Content-Type': 'application/json' }, headers(container)),
+                    body: JSON.stringify(observations),
+                });
+
+                const recordedBody = await recorded.json();
+
+                if (! recorded.ok) {
+                    throw new Error(recordedBody.message || 'The results could not be recorded.');
+                }
             }
 
             window.location.reload();
@@ -264,18 +300,13 @@
 
             const kind = action.getAttribute('data-alt-cookies-action');
 
-            if (kind === 'deep') {
-                deepScan(action);
+            if (kind === 'clear') {
+                post(container.getAttribute('data-alt-cookies-clear-url'), action);
 
                 return;
             }
 
-            post(
-                kind === 'clear'
-                    ? container.getAttribute('data-alt-cookies-clear-url')
-                    : container.getAttribute('data-alt-cookies-scan-url'),
-                action
-            );
+            runScan(action);
 
             return;
         }

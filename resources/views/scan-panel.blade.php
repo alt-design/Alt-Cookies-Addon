@@ -9,15 +9,14 @@
     <header class="alt-cookies-scan__header">
         <div>
             <p class="alt-cookies-scan__lede">
-                Requests a sample of this site's pages as a visitor who accepted every category, reports
-                the cookies those pages set, and names the third party services it recognises.
+                Requests a sample of this site's pages, then loads them here and lets their scripts run,
+                so the cookies are observed rather than guessed at. Takes a minute or so.
             </p>
         </div>
 
         <div class="alt-cookies-scan__actions">
             @if ($results)
                 <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-action="clear">Clear results</button>
-                <button type="button" class="alt-cookies-scan__button alt-cookies-scan__button--quiet" data-alt-cookies-action="deep">Deep scan</button>
             @endif
             <button type="button" class="alt-cookies-scan__button" data-alt-cookies-action="scan">{{ $results ? 'Scan again' : 'Scan this site' }}</button>
         </div>
@@ -26,26 +25,27 @@
     <p class="alt-cookies-scan__flash alt-cookies-scan__flash--error" data-alt-cookies-error hidden></p>
     <p class="alt-cookies-scan__flash" data-alt-cookies-status hidden></p>
 
-    @if ($results)
-        <details class="alt-cookies-scan__panel alt-cookies-scan__deep">
-            <summary>What a deep scan does before you run one</summary>
-            <p>
-                The scan above reads response headers, so it sees what the server sets and nothing
-                else. A deep scan loads each page in this browser, lets the scripts run, and reads
-                the cookies they set. That is the only way to observe them rather than infer them.
-            </p>
-            <p>
-                It loads the pages as a visitor who accepted everything, so the tracking runs for
-                real. Your analytics will record a visit for each page, from you, and the cookies
-                will be set in this browser. The cookies are cleaned up afterwards. The analytics
-                hits cannot be taken back.
-            </p>
-            <p class="alt-cookies-scan__hint">
-                Cookies set on another company's domain, such as DoubleClick or Facebook, stay in
-                the likely list either way. A page cannot read those.
-            </p>
-        </details>
-    @endif
+    <details class="alt-cookies-scan__panel alt-cookies-scan__deep">
+        <summary>What running a scan does</summary>
+        <p>
+            It runs in two passes, because neither on its own is complete. First it requests each
+            page and reads the response headers, which is how cookies the server sets are seen,
+            including the HttpOnly ones no script can read. Then it loads each page here and lets
+            its scripts run, which is how the cookies JavaScript sets are seen. A browser can only
+            give a name and value, so those carry no attributes.
+        </p>
+        <p>
+            The second pass loads the pages as a visitor who accepted everything, so the tracking
+            runs for real. This site's analytics will record a visit for each page, from you, and
+            the cookies are set in this browser. The cookies are removed afterwards and your own
+            consent choice is put back. The analytics hits cannot be taken back.
+        </p>
+        <p class="alt-cookies-scan__hint">
+            Cookies set on another company's domain, such as DoubleClick or Facebook, cannot be
+            read by any page and stay in the likely list. Set
+            <code>ALT_COOKIES_SCAN_IN_BROWSER=false</code> to run the header pass on its own.
+        </p>
+    </details>
 
         @if (! $results)
             <div class="alt-cookies-scan__panel alt-cookies-scan__empty">
@@ -92,6 +92,22 @@
                     Last scanned {{ \Illuminate\Support\Carbon::parse($results['scanned_at'])->diffForHumans() }}
                 </p>
             </div>
+
+            @if (! empty($results['browser_blocked']))
+                <div class="alt-cookies-scan__panel alt-cookies-scan__panel--warning">
+                    <h2>{{ count($results['browser_blocked']) }} {{ \Illuminate\Support\Str::plural('page', count($results['browser_blocked'])) }} could not be loaded in the browser</h2>
+                    <ul class="alt-cookies-scan__failures">
+                        @foreach ($results['browser_blocked'] as $url)
+                            <li><code>{{ $url }}</code></li>
+                        @endforeach
+                    </ul>
+                    <p class="alt-cookies-scan__hint">
+                        The site refused to be framed, usually through an <code>X-Frame-Options</code> header
+                        or a <code>frame-ancestors</code> policy. Cookies set by JavaScript on those pages were
+                        not observed, so anything only they set is missing from the results below.
+                    </p>
+                </div>
+            @endif
 
             @if ($failures->isNotEmpty())
                 <div class="alt-cookies-scan__panel alt-cookies-scan__panel--warning">

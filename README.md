@@ -55,17 +55,28 @@ names and then looking each one up. The scan does that part for you.
 
 Open `Control Panel > Alt Cookies`, switch to the **Scan** tab and press **Scan this site**.
 The tab sits alongside General and Google, on the same page as the rest of the addon's
-settings. It requests a sample of your own pages, as a visitor who accepted every category,
-and reports two things.
+settings.
+
+A scan runs in two passes, because neither on its own is complete:
+
+1. **It requests each page and reads the response headers.** This is how cookies the server
+   sets are seen, including the `HttpOnly` ones no script can read, and it is the only pass
+   that sees a cookie's attributes: `Secure`, `HttpOnly`, `SameSite` and its real lifetime.
+2. **It then loads each page in your browser and lets the scripts run.** This is how the
+   cookies JavaScript sets are seen: Google Analytics, Hotjar, Meta, Stripe and the rest. A
+   browser only hands over a name and value, so these carry no attributes.
+
+Results say which pass saw each cookie. What is left over is reported as likely.
 
 **Observed** cookies were set by the server and read out of the response headers. These are
 confirmed. You will normally see your Laravel session cookie, the CSRF token, and anything
 your host sets, such as Cloudflare's bot management cookie.
 
-**Likely** cookies come from third party services recognised in the page markup and in the
-Necessary, Analytics and Advertising fields on the settings page. The scan tells you the
-service is there, and what it is documented to set. Run a deep scan and most of these move
-into Observed.
+**Likely** cookies are the ones neither pass can reach: those set on another company's
+domain. DoubleClick's `IDE`, Facebook's `fr`, LinkedIn's `bcookie`. No page can read those,
+by design. They are recognised from the third party services found in the page markup and in
+the Necessary, Analytics and Advertising fields, and reported as what each service is
+documented to set.
 
 Around thirty services are recognised, including Google Analytics, Google Ads, Meta, Hotjar,
 LinkedIn, TikTok, Microsoft Clarity, HubSpot, YouTube, Vimeo, Stripe and Intercom. Anything
@@ -78,31 +89,20 @@ Two things the scan cannot see, both worth knowing:
   tags are configured in the container. Those have to be checked in Tag Manager.
 - **Cookies set only after an interaction**, such as a video the visitor has to press play on.
 
-### Deep scan
+### What running a scan costs
 
-The scan above reads response headers, so it sees what the server sets and nothing else.
-Everything a tracking snippet sets is inferred rather than observed.
+The second pass loads the pages as a visitor who accepted everything, so the tracking runs
+for real. **Your analytics will record a visit for each page, from you, and the cookies are
+set in your browser.** The cookies are removed afterwards and your own consent choice is put
+back. The analytics hits cannot be taken back.
 
-**Deep scan** observes them. It loads each page in the browser you are using, lets the
-scripts run, and reads the cookies they set. The control panel is same-origin with the front
-end, so anything the site sets on its own domain is readable.
+On a busy site that is noise. On a quiet one it is visible in the numbers, so run it
+deliberately rather than casually.
 
-On a typical site that moves Google Analytics, Hotjar, Meta, Microsoft Clarity and Stripe
-cookies out of the likely list and into the observed one.
-
-Two things it cannot do:
-
-- **Cookies set on another company's domain stay inferred.** DoubleClick's `IDE`, Facebook's
-  `fr`, LinkedIn's `bcookie`. No page can read those, by design.
-- **A browser cannot see a cookie's attributes**, only its name and value. Those rows show
-  the documented lifetime rather than an observed one, and say so.
-
-**Running one has a cost, and the button says so before you press it.** The pages load as a
-visitor who accepted everything, so the tracking runs for real: your analytics records a
-visit for each page, from you, and the cookies are set in your browser. The cookies are
-cleaned up afterwards and your previous consent choice is restored. The analytics hits
-cannot be taken back. That is why it is a separate button rather than part of the ordinary
-scan.
+To run the header pass on its own, set `ALT_COOKIES_SCAN_IN_BROWSER=false`. Worth doing
+where the control panel is served from a different domain to the front end, or where the
+site refuses to be framed, since the second pass cannot work in either case. A page that
+refuses to be framed is reported rather than quietly skipped.
 
 ### On the dashboard
 
@@ -147,11 +147,12 @@ php artisan vendor:publish --tag=alt-cookies-config
 | `scan.per_collection` | 5 | The most entries taken from any one collection |
 | `scan.timeout` | 10 | Seconds to wait for each page |
 | `scan.verify_ssl` | true | Verify the TLS certificate of the site being scanned |
+| `scan.run_in_browser` | true | Run the second pass, loading the pages in the control panel |
 | `scan.user_agent` | `AltCookiesScanner/1.0` | Sent so the requests are identifiable in your logs |
 
 Each has an environment variable, so you do not have to publish the config to change one:
-`ALT_COOKIES_SCAN_MAX_PAGES`, `ALT_COOKIES_SCAN_PER_COLLECTION`, `ALT_COOKIES_SCAN_TIMEOUT`
-and `ALT_COOKIES_SCAN_VERIFY_SSL`.
+`ALT_COOKIES_SCAN_MAX_PAGES`, `ALT_COOKIES_SCAN_PER_COLLECTION`, `ALT_COOKIES_SCAN_TIMEOUT`,
+`ALT_COOKIES_SCAN_VERIFY_SSL` and `ALT_COOKIES_SCAN_IN_BROWSER`.
 
 **Local sites served over https** use a development certificate that PHP does not trust, so
 every page in the scan will fail to fetch. Set `ALT_COOKIES_SCAN_VERIFY_SSL=false` in your

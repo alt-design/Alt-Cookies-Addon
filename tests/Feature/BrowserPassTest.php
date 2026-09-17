@@ -143,3 +143,71 @@ it('keeps the endpoint behind the addon permission', function () {
         ->post(cp_route('alt-cookies-addon.scan.observed'), ['cookies' => []])
         ->assertRedirect();
 });
+
+it('tells the control panel which pages to load and whether to bother', function () {
+    Http::fake(['*' => Http::response('<html></html>', 200)]);
+
+    $this->actingAs($this->user)
+        ->postJson(cp_route('alt-cookies-addon.scan.run'))
+        ->assertOk()
+        ->assertJsonPath('runInBrowser', true)
+        ->assertJsonStructure(['pages', 'counts', 'runInBrowser']);
+});
+
+it('says not to bother when the browser pass is turned off', function () {
+    config()->set('alt-cookies.scan.run_in_browser', false);
+
+    Http::fake(['*' => Http::response('<html></html>', 200)]);
+
+    $this->actingAs($this->user)
+        ->postJson(cp_route('alt-cookies-addon.scan.run'))
+        ->assertOk()
+        ->assertJsonPath('runInBrowser', false);
+});
+
+it('only offers pages the header pass could actually fetch', function () {
+    Http::fake(['*' => Http::response('Nope', 503)]);
+
+    $this->actingAs($this->user)
+        ->postJson(cp_route('alt-cookies-addon.scan.run'))
+        ->assertOk()
+        ->assertJsonPath('pages', []);
+});
+
+it('records a page the browser was refused', function () {
+    Http::fake(['*' => Http::response('<html></html>', 200)]);
+
+    $this->actingAs($this->user)->post(cp_route('alt-cookies-addon.scan.run'));
+
+    $url = app(ScanStore::class)->get()['pages'][0]['url'];
+
+    $this->actingAs($this->user)
+        ->postJson(cp_route('alt-cookies-addon.scan.observed'), [
+            'cookies' => [],
+            'blocked' => [$url],
+        ])
+        ->assertOk()
+        ->assertJsonPath('counts.blocked', 1);
+
+    expect(app(ScanStore::class)->get()['browser_blocked'])->toBe([$url]);
+});
+
+it('will not take a blocked page that was not in the scan', function () {
+    Http::fake(['*' => Http::response('<html></html>', 200)]);
+
+    $this->actingAs($this->user)->post(cp_route('alt-cookies-addon.scan.run'));
+
+    $this->actingAs($this->user)
+        ->postJson(cp_route('alt-cookies-addon.scan.observed'), [
+            'cookies' => [],
+            'blocked' => ['https://somewhere-else.example/'],
+        ])
+        ->assertStatus(422);
+});
+
+it('reports no blocked pages when every page loaded', function () {
+    $merged = $this->scanner->mergeBrowserObservations(headerScan(), [['name' => '_ga']]);
+
+    expect($merged['browser_blocked'])->toBe([])
+        ->and($merged['counts']['blocked'])->toBe(0);
+});

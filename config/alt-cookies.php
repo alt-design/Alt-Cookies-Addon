@@ -29,6 +29,12 @@ return [
         // can be turned off for local development only.
         'verify_ssl' => (bool) env('ALT_COOKIES_SCAN_VERIFY_SSL', true),
 
+        // After requesting the pages, load them in the control panel's own browser so
+        // the cookies JavaScript sets are observed rather than inferred. Turn this off
+        // where the control panel is served from a different domain to the front end,
+        // or where the site refuses to be framed.
+        'run_in_browser' => (bool) env('ALT_COOKIES_SCAN_IN_BROWSER', true),
+
         // Sent as the User-Agent so these requests are identifiable in logs.
         'user_agent' => 'AltCookiesScanner/1.0 (+https://github.com/alt-design/Alt-Cookies-Addon)',
 
