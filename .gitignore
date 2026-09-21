@@ -1,5 +1,13 @@
-node_modules
-vendor
-mix-manifest.json
-.idea
 composer.lock
+/node_modules
+/vendor
+vite.hot
+.DS_*
+.phpunit.result.cache
+.phpunit.cache
+.idea
+mix-manifest.json
+
+/tests/__fixtures__/content
+/tests/__fixtures__/users
+/tests/__fixtures__/storage
