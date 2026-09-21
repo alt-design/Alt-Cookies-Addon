@@ -156,9 +156,16 @@ Two things worth knowing about how it categorises:
 it into a Bard or rich text field gives real headings and tables rather than the markup as
 text. **Copy as Markdown** is plain text, for a file or a Markdown field.
 
-One thing to watch: Bard only keeps the node types its buttons allow, so pasting into a
-field without the table button enabled drops the tables and leaves the headings. Enable
-`table` on the field before pasting, or use a field that has it.
+Two things to set on the field you paste into, or the paste comes out wrong in ways that
+are easy to miss:
+
+- **`table` in `buttons`.** Bard only keeps the node types its buttons allow, so a field
+  without it drops the tables and leaves the headings behind.
+- **`enable_paste_rules: false`.** Bard's Markdown paste rules run over pasted text and
+  read a cookie name such as `_ga_*` as italics, storing it as `ga*`. Verified against
+  Statamic 6: it happens whether or not the name is wrapped in `<code>`, and it hits most
+  Google Analytics cookies. Turning paste rules off on that field leaves the names alone.
+  `enable_input_rules` can stay on, since that only affects typing.
 
 This is a starting point and not legal advice. Read it, edit the wording, and keep your own
 intro and contact details around it.
