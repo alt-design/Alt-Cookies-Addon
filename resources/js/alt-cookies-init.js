@@ -4,6 +4,20 @@ document.addEventListener("DOMContentLoaded", (event) => {
     window.altCookies.toastOverlay = document.getElementById('alt-cookies-consent-toast-overlay');
     window.altCookies.cookieLifetime = {{ cookie_lifetime }};
     window.altCookies.denyGtagTracking();
+
+    // So an editor can add an ordinary link to the cookie policy page rather than
+    // needing an onclick they cannot write from a rich text field
+    document.addEventListener('click', function (clickEvent) {
+        let trigger = clickEvent.target.closest('a[href="#cookie-preferences"], [data-alt-cookies-preferences]');
+
+        if (! trigger) {
+            return;
+        }
+
+        clickEvent.preventDefault();
+        window.altCookies.showPreferences();
+    });
+
     let cookie = window.altCookies.getAltCookie();
     // Show the toast if they're new / expired
     if ( cookie === null) {

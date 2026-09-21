@@ -88,6 +88,39 @@ window.altCookies = {
     eraseAltCookie: function () {
         document.cookie = 'AltCookieAddon=; Max-Age=-99999999;';
     },
+    // Tick the boxes to match what the visitor has already agreed to, so reopening
+    // the panel shows their choices rather than resetting them
+    applyStoredChoices : function ()
+    {
+        let cookie = window.altCookies.getAltCookie();
+
+        if (cookie === null) {
+            return;
+        }
+
+        let analytics = document.getElementById("alt-cookies-analytics");
+        let advertising = document.getElementById("alt-cookies-advertising");
+
+        if (analytics) {
+            analytics.checked = (cookie === "2" || cookie === "4");
+        }
+
+        if (advertising) {
+            advertising.checked = (cookie === "3" || cookie === "4");
+        }
+    },
+    // Reopen the panel so the visitor can change their mind. Unlike resetConsent
+    // this keeps their current choices and does not reload the page
+    showPreferences : function ()
+    {
+        if (window.altCookies.toast === null) {
+            return;
+        }
+
+        window.altCookies.applyStoredChoices();
+        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
+        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
+    },
     // Invalidate the cookie and deny google tracking on reset
     resetConsent : function()
     {

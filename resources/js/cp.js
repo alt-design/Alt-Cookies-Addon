@@ -325,7 +325,33 @@
             return;
         }
 
-        navigator.clipboard.writeText(source.value).then(function () {
+        flashConfirmation(copyToClipboard(format, source.value), confirmation);
+    });
+
+    /**
+     * The HTML goes on the clipboard as text/html as well as text/plain, so that
+     * pasting it into a rich text field produces headings and tables rather than
+     * the markup as literal text. Markdown stays plain, which is what it is for.
+     */
+    function copyToClipboard(format, value)
+    {
+        if (format !== 'html' || typeof ClipboardItem === 'undefined') {
+            return navigator.clipboard.writeText(value);
+        }
+
+        return navigator.clipboard.write([
+            new ClipboardItem({
+                'text/html': new Blob([value], { type: 'text/html' }),
+                'text/plain': new Blob([value], { type: 'text/plain' }),
+            }),
+        ]).catch(function () {
+            return navigator.clipboard.writeText(value);
+        });
+    }
+
+    function flashConfirmation(copying, confirmation)
+    {
+        copying.then(function () {
             if (! confirmation) {
                 return;
             }
@@ -333,5 +359,5 @@
             confirmation.hidden = false;
             setTimeout(function () { confirmation.hidden = true; }, 2000);
         });
-    });
+    }
 })();

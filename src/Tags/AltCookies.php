@@ -141,6 +141,18 @@ class AltCookies extends Tags
         return 'window.altCookies.resetConsent()';
     }
 
+    /**
+     * The {{ AltCookies:preferences }} tag.
+     * Reopens the panel with the visitor's current choices, for a template that
+     * wants a button of its own rather than a link in page content.
+     *
+     * @return string
+     */
+    public function preferences()
+    {
+        return 'window.altCookies.showPreferences()';
+    }
+
     public function accept()
     {
         $simple = $this->params->get('simple') ?? false;

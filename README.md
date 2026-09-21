@@ -27,8 +27,30 @@ To enable the default consent popup:
 
 - Open up your main `Template.antlers.html` or equivalent
 - Add our `{{ AltCookies:Toast }}` tag before the closing `</body>` tag
-- Add a way to change the preferences, up to you here, but for example, `<button onclick="{{ AltCookies:reset }}">Cookie Preferences</button>`
+- Add a way to change the preferences, see below
 - You're away!!
+
+### Letting people change their mind
+
+The addon listens for clicks on any link whose href is `#cookie-preferences`, so an editor
+can add an ordinary link anywhere in page content, typically on the cookie policy page:
+
+``` html
+<a href="#cookie-preferences">Change your cookie preferences</a>
+```
+
+That reopens the panel with their current choices already ticked, and leaves those choices
+alone if they close it again. `data-alt-cookies-preferences` on any element does the same,
+for a button that is not a link.
+
+From a template, `{{ AltCookies:preferences }}` returns the call for an `onclick`:
+
+``` html
+<button onclick="{{ AltCookies:preferences }}">Cookie preferences</button>
+```
+
+`{{ AltCookies:reset }}` is still there and still does what it always did, which is throw
+the choices away and reload. Prefer `preferences` for a link people are meant to use.
 
 To configure Google Analytics : 
 
@@ -130,6 +152,14 @@ Two things worth knowing about how it categorises:
 - **Anything the scan could not identify is marked** `Describe this cookie before
   publishing.` rather than left blank, so it cannot go out unnoticed.
 
+**Copy as HTML** puts the copy on the clipboard as HTML as well as plain text, so pasting
+it into a Bard or rich text field gives real headings and tables rather than the markup as
+text. **Copy as Markdown** is plain text, for a file or a Markdown field.
+
+One thing to watch: Bard only keeps the node types its buttons allow, so pasting into a
+field without the table button enabled drops the tables and leaves the headings. Enable
+`table` on the field before pasting, or use a field that has it.
+
 This is a starting point and not legal advice. Read it, edit the wording, and keep your own
 intro and contact details around it.
 
@@ -189,7 +219,19 @@ which needs 8.4. Correct the constraint before serving it locally, or the site w
 a platform check. It also needs Node 20 or later, because Tailwind 4 ships a native binding
 that will not build on 18.
 
-After changing anything in `resources/css` or `resources/dist`, republish:
+The addon's own front end assets are built with Vite, which needs Node 20 or later. The
+committed build in `resources/dist` is what sites get, so rebuild it in the same commit as
+any change to `resources/js/frontend-manager.js` or `resources/css`:
+
+``` bash
+npm install
+npm run build
+```
+
+`resources/js/cp.js` and `resources/js/alt-cookies-init.js` are served as they are rather
+than bundled, so they need no build step.
+
+After changing anything in `resources/css` or `resources/dist`, republish into the dev site:
 
 ``` bash
 php artisan vendor:publish --tag=alt-cookies --force
