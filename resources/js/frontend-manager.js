@@ -7,18 +7,146 @@ window.altCookies = {
     userConsentGranted : function ()
     {
         window.altCookies.buildConsentLevel(true);
-        window.altCookies.updateConsent();
-        window.altCookies.setAltCookie();
-        window.altCookies.hideToast();
-        location.reload();
+        window.altCookies.applyConsentLevel();
     },
     simpleConsentGranted : function ()
     {
         window.altCookies.consentLevel = 4;
+        window.altCookies.applyConsentLevel();
+    },
+    // A script that is already running cannot be unloaded, so taking consent away still
+    // needs a fresh page. Giving it only needs the newly allowed snippets switching on.
+    applyConsentLevel : function ()
+    {
+        let previousLevel = window.altCookies.getAltCookie();
+
         window.altCookies.updateConsent();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
-        location.reload();
+
+        if (window.altCookies.withdrawsConsent(previousLevel, String(window.altCookies.consentLevel))) {
+            location.reload();
+            return;
+        }
+
+        window.altCookies.activateConsentedScripts();
+    },
+    grants : function (level, category)
+    {
+        if (category === 'analytics') {
+            return level === '2' || level === '4';
+        }
+
+        if (category === 'advertising') {
+            return level === '3' || level === '4';
+        }
+
+        return false;
+    },
+    withdrawsConsent : function (previousLevel, newLevel)
+    {
+        return ['analytics', 'advertising'].some(function (category) {
+            return window.altCookies.grants(previousLevel, category)
+                && ! window.altCookies.grants(newLevel, category);
+        });
+    },
+    activateConsentedScripts : function ()
+    {
+        let level = window.altCookies.getAltCookie();
+        let templates = document.querySelectorAll('template[data-alt-cookies-category]:not([data-alt-cookies-active])');
+
+        templates.forEach(function (template) {
+            if (! window.altCookies.grants(level, template.dataset.altCookiesCategory)) {
+                return;
+            }
+
+            template.dataset.altCookiesActive = '';
+            window.altCookies.insertInOrder(Array.from(template.content.cloneNode(true).childNodes), template);
+        });
+    },
+    // Added scripts run the moment they are inserted and external ones load async, so a
+    // snippet that loads a library and then calls it has to wait for each external script
+    insertInOrder : function (nodes, template)
+    {
+        let node = nodes.shift();
+
+        if (node === undefined) {
+            return;
+        }
+
+        let insertNext = function () {
+            window.altCookies.insertInOrder(nodes, template);
+        };
+
+        if (node.nodeName !== 'SCRIPT') {
+            window.altCookies.insertWithNestedScripts(node, template, insertNext);
+            return;
+        }
+
+        let script = window.altCookies.runnableCopy(node);
+
+        if (! window.altCookies.blocksWhatFollows(node)) {
+            template.parentNode.insertBefore(script, template);
+            insertNext();
+            return;
+        }
+
+        script.addEventListener('load', insertNext);
+        script.addEventListener('error', insertNext);
+        template.parentNode.insertBefore(script, template);
+    },
+    insertWithNestedScripts : function (node, template, insertNext)
+    {
+        let nested = node.querySelectorAll ? Array.from(node.querySelectorAll('script')) : [];
+        let waitingOn = 0;
+
+        let finishOne = function () {
+            waitingOn--;
+
+            if (waitingOn === 0) {
+                insertNext();
+            }
+        };
+
+        nested.forEach(function (script) {
+            let copy = window.altCookies.runnableCopy(script);
+
+            if (window.altCookies.blocksWhatFollows(script)) {
+                waitingOn++;
+                copy.addEventListener('load', finishOne);
+                copy.addEventListener('error', finishOne);
+            }
+
+            script.replaceWith(copy);
+        });
+
+        template.parentNode.insertBefore(node, template);
+
+        if (waitingOn === 0) {
+            insertNext();
+        }
+    },
+    blocksWhatFollows : function (script)
+    {
+        let runsAsJavaScript = ! script.type || /javascript|ecmascript/i.test(script.type);
+
+        return script.hasAttribute('src')
+            && runsAsJavaScript
+            && ! script.hasAttribute('async')
+            && ! script.hasAttribute('defer');
+    },
+    runnableCopy : function (script)
+    {
+        let copy = document.createElement('script');
+
+        Array.from(script.attributes).forEach(function (attribute) {
+            copy.setAttribute(attribute.name, attribute.value);
+        });
+
+        copy.async = script.hasAttribute('async');
+        copy.text = script.text;
+
+        return copy;
     },
     // Google needs the consent change signalled on the page it happened on, before the reload.
     // Reloading into a new 'default' alone loses the transition, and the data from before it.
@@ -46,10 +174,7 @@ window.altCookies = {
     userConsentDenied : function ()
     {
         window.altCookies.buildConsentLevel(false);
-        window.altCookies.updateConsent();
-        window.altCookies.setAltCookie();
-        window.altCookies.hideToast();
-        location.reload();
+        window.altCookies.applyConsentLevel();
     },
     hideToast : function()
     {
@@ -91,11 +216,11 @@ window.altCookies = {
         let advertising = document.getElementById("alt-cookies-advertising");
 
         if (analytics) {
-            analytics.checked = (cookie === "2" || cookie === "4");
+            analytics.checked = window.altCookies.grants(cookie, 'analytics');
         }
 
         if (advertising) {
-            advertising.checked = (cookie === "3" || cookie === "4");
+            advertising.checked = window.altCookies.grants(cookie, 'advertising');
         }
     },
     // Reopen the panel so the visitor can change their mind. Unlike resetConsent
@@ -121,3 +246,5 @@ window.altCookies = {
         location.reload();
     },
 }
+
+window.altCookies.activateConsentedScripts();

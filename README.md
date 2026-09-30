@@ -93,6 +93,29 @@ To configure other tracking :
 - `Necessary` cookies always appear on page
 - WARNING : These fields place what you put in them onto the page. Please check for errors and make sure that the code you put in here is safe.
 
+### How consent is applied
+
+`Analytics` and `Advertising` are output on every page inside an inert `<template>`, so
+nothing in them runs or loads until the visitor agrees. When they accept, the snippets for
+the categories they chose are switched on in place, without reloading the page. Returning
+visitors get theirs switched on as the page loads. Scripts run in the order they are
+written, and an external script without `async` finishes loading before the next one runs,
+so a snippet that loads a library and then calls it works as it would inline.
+
+Because the page is the same whatever a visitor has chosen, it is safe to serve from
+Statamic's full static cache.
+
+Two things this changes:
+
+- Taking consent away still reloads the page, because a script that is already running
+  cannot be unloaded. Giving consent, or adding a category, does not.
+- The snippets run after the page has parsed rather than as the `<head>` is read. On the
+  page where a visitor first accepts, `DOMContentLoaded` and `load` have already happened,
+  so code in a snippet that waits for either runs from the next page onwards. Avoid
+  `document.write` in these fields: run after parsing, it replaces the whole page. The
+  standard vendor snippets (Google, Hotjar, Meta, LinkedIn and similar) load asynchronously
+  and are unaffected.
+
 
 ## Scanning for cookies
 
