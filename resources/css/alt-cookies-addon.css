@@ -16,6 +16,11 @@ html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
     scroll-padding-bottom: var(--alt-cookies-banner-height);
 }
 
+.alt-cookies-non-modal .alt-cookies-actions {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+}
+
 @media (max-height: 620px) {
     :root {
         --alt-cookies-banner-height: 8rem;
@@ -56,6 +61,7 @@ html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
 
     .alt-cookies-non-modal .alt-cookies-actions {
         margin-top: 0;
+        row-gap: 0.25rem;
     }
 
     .alt-cookies-non-modal #alt-cookies-accept,
