@@ -190,6 +190,23 @@ class AltCookies extends Tags
     }
 
     /**
+     * The {{ AltCookies:enabled category="analytics" }} tag.
+     * Whether a consent category is switched on in the settings, so the panel only asks
+     * about cookies the site can actually set.
+     * @return bool
+     */
+    public function enabled()
+    {
+        $category = $this->params->get('category');
+
+        if (! in_array($category, ['analytics', 'advertising'], true)) {
+            return false;
+        }
+
+        return (bool) (new Data('settings'))->get('enable_'.$category);
+    }
+
+    /**
      * The {{ AltCookies:checkboxes }} tag.
      * Ticks a checkbox from its configured default. A returning visitor's own choices are
      * applied in the browser when the panel reopens, so the page does not vary by cookie.

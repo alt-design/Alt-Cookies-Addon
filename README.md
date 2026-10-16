@@ -52,6 +52,18 @@ From a template, `{{ AltCookies:preferences }}` returns the call for an `onclick
 `{{ AltCookies:reset }}` is still there and still does what it always did, which is throw
 the choices away and reload. Prefer `preferences` for a link people are meant to use.
 
+### Only the categories you use
+
+The panel shows the Analytics and Advertising choices only when that category is enabled
+on the `General` tab. If you publish your own copy of the consent view, wrap each choice
+the same way; the script counts a missing checkbox as declined.
+
+``` html
+{{ if {AltCookies:enabled category="advertising"} }}
+    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" ... />
+{{ /if }}
+```
+
 To configure Google Analytics : 
 
 - Navigate to your `Control Panel > Alt Cookies`
