@@ -2,3 +2,12 @@
 @import "tailwindcss/utilities";
 
 
+
+:root {
+    --alt-cookies-banner-height: 14rem;
+}
+
+html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
+    padding-bottom: var(--alt-cookies-banner-height);
+    scroll-padding-bottom: var(--alt-cookies-banner-height);
+}

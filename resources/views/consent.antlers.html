@@ -1,20 +1,27 @@
 {{ AltCookies:scripts }}
 {{ AltCookies:defaultCSS }}
+{{ if overlay === false }}
+<div id="alt-cookies-consent-toast-overlay" role="region" aria-label="Cookie consent" class="toast-overlay alt-cookies-non-modal alt-cookies-hidden alt-cookies-fixed alt-cookies-inset-x-0 alt-cookies-bottom-0 alt-cookies-z-[80] alt-cookies-pointer-events-none">
+    <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-2 alt-cookies-bottom-0 alt-cookies-inset-x-0 alt-cookies-mx-auto alt-cookies-pointer-events-auto
+        alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-full alt-cookies-max-w-[640px]">
+        <div class="alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-3 ">
+{{ else }}
 <div id="alt-cookies-consent-toast-overlay" class="toast-overlay alt-cookies-hidden alt-cookies-fixed alt-cookies-inset-0 alt-cookies-bg-overlay alt-cookies-z-[999]">
     <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-4 alt-cookies-bottom-0 alt-cookies-mx-auto alt-cookies-right-0
         alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-[500px] alt-cookies-max-w-[90%]">
         <div class="alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-4 ">
+{{ /if }}
             <div class="alt-cookies-flex alt-cookies-justify-between alt-cookies-items-center">
-                <div id="alt-cookies-consent-toast-title" class="alt-cookies-text-lg alt-cookies-font-semibold">Cookie Consent</div>
+                <div id="alt-cookies-consent-toast-title" class="{{ overlay === false ? 'alt-cookies-text-base' : 'alt-cookies-text-lg' }} alt-cookies-font-semibold">Cookie Consent</div>
                 <button class="alt-cookies-text-gray-500 hover:alt-cookies-text-gray-700 focus:alt-cookies-outline-none alt-cookies-hidden" aria-label="Close">
                     <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-            <p id="alt-cookies-consent-toast-text" class="alt-cookies-text-gray-600 alt-cookies-mt-2">We use cookies to enhance your site experience. Choose your preferences below.</p>
-            <div class="alt-cookies-mt-4 alt-cookies-flex alt-cookies-flex-wrap alt-cookies-justify-between alt-cookies-items-center">
-                <div>
+            <p id="alt-cookies-consent-toast-text" class="alt-cookies-text-gray-600 {{ overlay === false ? 'alt-cookies-text-sm alt-cookies-mt-1' : 'alt-cookies-mt-2' }}">We use cookies to enhance your site experience. Choose your preferences below.</p>
+            <div class="{{ overlay === false ? 'alt-cookies-mt-2' : 'alt-cookies-mt-4' }} alt-cookies-flex alt-cookies-flex-wrap alt-cookies-justify-between alt-cookies-items-center">
+                <div class="{{ overlay === false ? 'alt-cookies-flex alt-cookies-flex-wrap alt-cookies-gap-x-4' : '' }}">
                     <div class="alt-cookies-opacity-50">
                         <input type="checkbox" name="Necessary" id="alt-cookies-necessary" class="alt-cookies-checkbox" checked disabled/>
                         <label for="alt-cookies-necessary" class="alt-cookies-checkbox-label">Necessary</label>
@@ -28,7 +35,7 @@
                         <label for="alt-cookies-advertising" class="alt-cookies-checkbox-label">Advertising</label>
                     </div>
                 </div>
-                <div class="alt-cookies-mt-4 alt-cookies-flex">
+                <div class="{{ overlay === false ? 'alt-cookies-mt-2' : 'alt-cookies-mt-4' }} alt-cookies-flex">
                     <button id="alt-cookies-accept" class="alt-cookies-button alt-cookies-mr-2 alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-blue-500 alt-cookies-text-white alt-cookies-rounded hover:alt-cookies-bg-blue-600
                         focus:alt-cookies-utline-none focus:alt-cookies-bg-blue-600"
                             onclick="{{ AltCookies:accept }}">Accept</button>

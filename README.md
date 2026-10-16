@@ -28,6 +28,20 @@ To enable the default consent popup:
 - Add a way to change the preferences, up to you here, but for example, `<button onclick="{{ AltCookies:reset }}">Cookie Preferences</button>`
 - You're away!!
 
+### Banner without the overlay
+
+By default the popup dims the whole page and takes every tap until a choice is made. To show a compact banner along the bottom of the screen instead, with no backdrop, pass `overlay="false"`:
+
+``` antlers
+{{ AltCookies:Toast overlay="false" }}
+```
+
+- The page behind the banner stays scrollable and tappable, and keyboard focus is never trapped.
+- The banner is a labelled `region` landmark rather than a modal. While it is showing, the page gets bottom padding and scroll padding of `--alt-cookies-banner-height` (14rem by default) so the end of the page and any focused element are not hidden underneath it. Override the variable in your own CSS if your banner copy is taller or shorter.
+- It works with both the standard and the simple popup, and the option is per tag, so you can use it on selected templates only (for example landing pages) and leave the rest of the site on the default.
+- Leaving the parameter out keeps the existing overlay behaviour.
+- The banner sits at `z-index: 80`, below most modal dialogs, so a modal opened from the page covers it. Fixed elements near the bottom of the screen that need to stay clear of it need their own spacing.
+
 To configure Google Analytics : 
 
 - Navigate to your `Control Panel > Alt Cookies`
