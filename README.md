@@ -40,6 +40,7 @@ By default the popup dims the whole page and takes every tap until a choice is m
 - The banner is a labelled `region` landmark rather than a modal. While it is showing, the page gets bottom padding and scroll padding of `--alt-cookies-banner-height` (14rem by default) so the end of the page and any focused element are not hidden underneath it. Override the variable in your own CSS if your banner copy is taller or shorter.
 - It works with both the standard and the simple popup, and the option is per tag, so you can use it on selected templates only (for example landing pages) and leave the rest of the site on the default.
 - Leaving the parameter out keeps the existing overlay behaviour.
+- On viewports shorter than 620px the banner collapses to fit: the heading is hidden (the region keeps its label), the text is 14px, the three category checkboxes share one row and the two buttons sit side by side, with no category hidden or pre-ticked. At that height `--alt-cookies-banner-height` defaults to 8rem.
 - The banner sits at `z-index: 80`, below most modal dialogs, so a modal opened from the page covers it. Fixed elements near the bottom of the screen that need to stay clear of it need their own spacing.
 
 To configure Google Analytics : 
