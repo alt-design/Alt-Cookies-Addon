@@ -80,6 +80,15 @@
             start();
         }
 
+        function isCoveredByBanner(rect) {
+            var x = Math.min(Math.max(rect.left + rect.width / 2, 0), window.innerWidth - 1);
+            var ys = [rect.bottom - 2, rect.top + rect.height / 2];
+            return ys.some(function (y) {
+                var hit = document.elementFromPoint(x, Math.min(Math.max(y, 0), window.innerHeight - 1));
+                return hit !== null && toast.contains(hit);
+            });
+        }
+
         function clearFocused() {
             var focused = document.activeElement;
             if (!observer || !focused || toast.contains(focused)) {
@@ -88,6 +97,9 @@
             var rect = focused.getBoundingClientRect();
             var bannerTop = toast.getBoundingClientRect().top;
             if (rect.height === 0 || rect.bottom <= bannerTop || rect.top >= window.innerHeight) {
+                return;
+            }
+            if (!isCoveredByBanner(rect)) {
                 return;
             }
             var shift = Math.min(rect.bottom - bannerTop + 8, Math.max(rect.top - 8, 0));
