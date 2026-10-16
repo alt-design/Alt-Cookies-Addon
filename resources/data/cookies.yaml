@@ -1,0 +1,535 @@
+# Known cookies, used to explain what a scan found.
+#
+# Each entry matches on either `name` (exact) or `pattern` (wildcards via *).
+# Exact matches are checked first. `duration` is the lifetime the provider
+# documents, which is not always the lifetime actually observed.
+#
+# Categories: necessary, functional, analytics, advertising.
+
+# ---------------------------------------------------------------------------
+# This addon
+# ---------------------------------------------------------------------------
+-
+  name: AltCookieAddon
+  provider: Alt Cookies
+  category: necessary
+  duration: 'As configured (30 days by default)'
+  purpose: 'Stores the consent level the visitor chose, so their choice is remembered and the scripts they consented to are the only ones loaded.'
+
+# ---------------------------------------------------------------------------
+# Laravel and Statamic
+# ---------------------------------------------------------------------------
+-
+  name: XSRF-TOKEN
+  provider: Laravel
+  category: necessary
+  duration: '2 hours (session lifetime)'
+  purpose: 'Cross-site request forgery token. Lets the site confirm that a form submission came from one of its own pages.'
+-
+  pattern: '*_session'
+  provider: Laravel
+  category: necessary
+  duration: '2 hours (session lifetime)'
+  purpose: 'Identifies the visitor session so state such as form errors, flash messages and control panel login survive between requests.'
+-
+  pattern: '*-session'
+  provider: Laravel
+  category: necessary
+  duration: '2 hours (session lifetime)'
+  purpose: 'Identifies the visitor session so state such as form errors, flash messages and control panel login survive between requests.'
+-
+  pattern: 'remember_web_*'
+  provider: Laravel
+  category: necessary
+  duration: '5 years'
+  purpose: 'Keeps a user signed in between visits when they ticked remember me.'
+-
+  name: statamic_preview
+  provider: Statamic
+  category: necessary
+  duration: 'Session'
+  purpose: 'Marks a request as a control panel preview so unpublished content renders.'
+
+# ---------------------------------------------------------------------------
+# Google Analytics
+# ---------------------------------------------------------------------------
+-
+  name: _ga
+  provider: Google Analytics
+  category: analytics
+  duration: '2 years'
+  purpose: 'Assigns a randomly generated client ID so returning visitors can be counted as the same person.'
+-
+  pattern: '_ga_*'
+  provider: Google Analytics
+  category: analytics
+  duration: '2 years'
+  purpose: 'Holds session state for one GA4 property. The suffix is the measurement ID.'
+-
+  name: _gid
+  provider: Google Analytics
+  category: analytics
+  duration: '24 hours'
+  purpose: 'Distinguishes visitors within a single day for Universal Analytics reporting.'
+-
+  name: _gat
+  provider: Google Analytics
+  category: analytics
+  duration: '1 minute'
+  purpose: 'Throttles the rate of requests sent to Google Analytics on busy sites.'
+-
+  pattern: '_gat_*'
+  provider: Google Analytics
+  category: analytics
+  duration: '1 minute'
+  purpose: 'Throttles the rate of requests sent to Google Analytics for a specific property.'
+-
+  pattern: '_dc_gtm_*'
+  provider: Google Analytics
+  category: analytics
+  duration: '1 minute'
+  purpose: 'Throttles requests when Google Analytics is loaded through Google Tag Manager.'
+-
+  pattern: '__utm*'
+  provider: Google Analytics (legacy)
+  category: analytics
+  duration: 'Up to 2 years'
+  purpose: 'Classic Universal Analytics tracking. Its presence usually means an old analytics snippet is still on the page.'
+-
+  pattern: '_gac_*'
+  provider: Google Ads
+  category: advertising
+  duration: '90 days'
+  purpose: 'Stores campaign information so Google Ads conversions can be attributed to a click.'
+-
+  name: _gcl_au
+  provider: Google Ads
+  category: advertising
+  duration: '90 days'
+  purpose: 'Conversion linker. Stores ad click information so a later conversion can be credited to the ad that produced it.'
+-
+  pattern: '_gcl_*'
+  provider: Google Ads
+  category: advertising
+  duration: '90 days'
+  purpose: 'Conversion linker. Stores ad click information so a later conversion can be credited to the ad that produced it.'
+
+# ---------------------------------------------------------------------------
+# Google advertising and shared Google domains
+# ---------------------------------------------------------------------------
+-
+  name: IDE
+  provider: Google DoubleClick
+  category: advertising
+  duration: '13 months'
+  purpose: 'Measures and targets advertising across sites, and records which ads a visitor has already been shown.'
+-
+  name: test_cookie
+  provider: Google DoubleClick
+  category: advertising
+  duration: '15 minutes'
+  purpose: 'Checks whether the browser accepts third-party cookies before advertising scripts try to set any.'
+-
+  name: NID
+  provider: Google
+  category: advertising
+  duration: '6 months'
+  purpose: 'Remembers Google preferences and is used to personalise advertising on Google properties.'
+-
+  name: DSID
+  provider: Google DoubleClick
+  category: advertising
+  duration: '2 weeks'
+  purpose: 'Links a signed-in Google user across devices for advertising purposes.'
+-
+  name: _GRECAPTCHA
+  provider: Google reCAPTCHA
+  category: necessary
+  duration: '6 months'
+  purpose: 'Distinguishes people from bots to protect forms from spam. Treated as strictly necessary where reCAPTCHA protects a form the visitor asked to use.'
+-
+  name: CONSENT
+  provider: Google
+  category: necessary
+  duration: '2 years'
+  purpose: 'Records consent choices made on Google properties, including embedded YouTube and Maps.'
+
+# ---------------------------------------------------------------------------
+# YouTube and Vimeo
+# ---------------------------------------------------------------------------
+-
+  name: VISITOR_INFO1_LIVE
+  provider: YouTube
+  category: advertising
+  duration: '6 months'
+  purpose: 'Estimates bandwidth and selects the video player interface. Also used for advertising measurement.'
+-
+  name: VISITOR_PRIVACY_METADATA
+  provider: YouTube
+  category: advertising
+  duration: '6 months'
+  purpose: 'Stores the consent state of the visitor for the embedded player.'
+-
+  name: YSC
+  provider: YouTube
+  category: advertising
+  duration: 'Session'
+  purpose: 'Counts video views for the embedded player.'
+-
+  name: PREF
+  provider: YouTube
+  category: functional
+  duration: '8 months'
+  purpose: 'Remembers player preferences such as volume and playback quality.'
+-
+  pattern: '__Secure-YEC*'
+  provider: YouTube
+  category: advertising
+  duration: '13 months'
+  purpose: 'Stores player and consent state for embedded YouTube videos.'
+-
+  name: vuid
+  provider: Vimeo
+  category: analytics
+  duration: '2 years'
+  purpose: 'Records the visitor video viewing history so Vimeo can report on plays.'
+-
+  name: player
+  provider: Vimeo
+  category: functional
+  duration: '1 year'
+  purpose: 'Remembers player preferences such as volume and captions.'
+
+# ---------------------------------------------------------------------------
+# Meta
+# ---------------------------------------------------------------------------
+-
+  name: _fbp
+  provider: Meta Pixel
+  category: advertising
+  duration: '90 days'
+  purpose: 'Identifies browsers for advertising delivery and conversion measurement on Facebook and Instagram.'
+-
+  name: _fbc
+  provider: Meta Pixel
+  category: advertising
+  duration: '90 days'
+  purpose: 'Stores the click identifier from a Facebook or Instagram ad so a later conversion can be attributed to it.'
+-
+  name: fr
+  provider: Meta
+  category: advertising
+  duration: '90 days'
+  purpose: 'Delivers, measures and improves the relevance of advertising on Facebook.'
+-
+  name: datr
+  provider: Meta
+  category: necessary
+  duration: '2 years'
+  purpose: 'Identifies the browser for security purposes, including detecting suspicious login activity.'
+
+# ---------------------------------------------------------------------------
+# Microsoft
+# ---------------------------------------------------------------------------
+-
+  name: MUID
+  provider: Microsoft
+  category: advertising
+  duration: '13 months'
+  purpose: 'Identifies unique browsers across Microsoft properties for advertising and analytics.'
+-
+  pattern: '_uetsid*'
+  provider: Microsoft Advertising
+  category: advertising
+  duration: '24 hours'
+  purpose: 'Groups the actions a visitor takes in one session for Microsoft Advertising conversion tracking.'
+-
+  pattern: '_uetvid*'
+  provider: Microsoft Advertising
+  category: advertising
+  duration: '13 months'
+  purpose: 'Identifies a returning visitor for Microsoft Advertising conversion tracking.'
+-
+  pattern: '_clck*'
+  provider: Microsoft Clarity
+  category: analytics
+  duration: '1 year'
+  purpose: 'Keeps a Clarity user ID so behaviour across sessions can be joined into one recording history.'
+-
+  pattern: '_clsk*'
+  provider: Microsoft Clarity
+  category: analytics
+  duration: '24 hours'
+  purpose: 'Joins the page views in one Clarity session into a single recording.'
+
+# ---------------------------------------------------------------------------
+# Hotjar
+# ---------------------------------------------------------------------------
+-
+  pattern: '_hjSessionUser_*'
+  provider: Hotjar
+  category: analytics
+  duration: '1 year'
+  purpose: 'Holds the Hotjar user ID so the same visitor is recognised across sessions.'
+-
+  pattern: '_hjSession_*'
+  provider: Hotjar
+  category: analytics
+  duration: '30 minutes'
+  purpose: 'Holds current session data for one Hotjar site.'
+-
+  pattern: '_hj*'
+  provider: Hotjar
+  category: analytics
+  duration: 'Varies, from 30 minutes to 1 year'
+  purpose: 'Supporting cookie for Hotjar heatmaps, recordings and surveys. Controls sampling, survey display and recording state.'
+
+# ---------------------------------------------------------------------------
+# LinkedIn
+# ---------------------------------------------------------------------------
+-
+  name: li_sugr
+  provider: LinkedIn
+  category: advertising
+  duration: '90 days'
+  purpose: 'Builds a probabilistic identifier for advertising measurement.'
+-
+  name: bcookie
+  provider: LinkedIn
+  category: advertising
+  duration: '1 year'
+  purpose: 'Browser identifier used by LinkedIn for advertising and site features.'
+-
+  name: bscookie
+  provider: LinkedIn
+  category: necessary
+  duration: '1 year'
+  purpose: 'Secure browser identifier used by LinkedIn for authentication.'
+-
+  name: lidc
+  provider: LinkedIn
+  category: necessary
+  duration: '24 hours'
+  purpose: 'Routes the visitor to the right LinkedIn data centre.'
+-
+  name: UserMatchHistory
+  provider: LinkedIn
+  category: advertising
+  duration: '30 days'
+  purpose: 'Synchronises the LinkedIn advertising identifier with the site.'
+-
+  name: AnalyticsSyncHistory
+  provider: LinkedIn
+  category: advertising
+  duration: '30 days'
+  purpose: 'Records when the visitor was synchronised with the LinkedIn advertising platform.'
+-
+  name: li_gc
+  provider: LinkedIn
+  category: necessary
+  duration: '6 months'
+  purpose: 'Stores the consent choice the visitor made for non-essential LinkedIn cookies.'
+
+# ---------------------------------------------------------------------------
+# Other advertising networks
+# ---------------------------------------------------------------------------
+-
+  name: _ttp
+  provider: TikTok
+  category: advertising
+  duration: '13 months'
+  purpose: 'Measures and improves the performance of TikTok advertising campaigns.'
+-
+  name: ttwid
+  provider: TikTok
+  category: advertising
+  duration: '1 year'
+  purpose: 'Identifies the visitor for TikTok advertising and embedded video.'
+-
+  name: personalization_id
+  provider: X (Twitter)
+  category: advertising
+  duration: '2 years'
+  purpose: 'Collects information for advertising personalisation and measurement.'
+-
+  name: muc_ads
+  provider: X (Twitter)
+  category: advertising
+  duration: '2 years'
+  purpose: 'Measures advertising performance across sites.'
+-
+  name: guest_id
+  provider: X (Twitter)
+  category: functional
+  duration: '2 years'
+  purpose: 'Identifies a signed-out visitor to embedded X content.'
+-
+  name: _pin_unauth
+  provider: Pinterest
+  category: advertising
+  duration: '1 year'
+  purpose: 'Groups actions for visitors who cannot be identified as a signed-in Pinterest user.'
+-
+  name: _epik
+  provider: Pinterest
+  category: advertising
+  duration: '1 year'
+  purpose: 'Stores the click identifier from a Pinterest ad for conversion attribution.'
+
+# ---------------------------------------------------------------------------
+# HubSpot
+# ---------------------------------------------------------------------------
+-
+  name: hubspotutk
+  provider: HubSpot
+  category: analytics
+  duration: '6 months'
+  purpose: 'Identifies the visitor so form submissions can be joined to their browsing history in the CRM.'
+-
+  name: __hstc
+  provider: HubSpot
+  category: analytics
+  duration: '6 months'
+  purpose: 'Main HubSpot analytics cookie, holding the domain, visitor identifier and timestamps.'
+-
+  name: __hssc
+  provider: HubSpot
+  category: analytics
+  duration: '30 minutes'
+  purpose: 'Tracks the current HubSpot session and counts page views within it.'
+-
+  name: __hssrc
+  provider: HubSpot
+  category: analytics
+  duration: 'Session'
+  purpose: 'Determines whether the visitor has restarted their browser, so a new session can be started.'
+-
+  pattern: '__hs_opt_out*'
+  provider: HubSpot
+  category: necessary
+  duration: '6 months'
+  purpose: 'Records that the visitor declined HubSpot tracking, so they are not asked again.'
+-
+  name: messagesUtk
+  provider: HubSpot
+  category: functional
+  duration: '6 months'
+  purpose: 'Identifies the visitor to the HubSpot chat widget so a conversation can continue across pages.'
+
+# ---------------------------------------------------------------------------
+# Infrastructure and payments
+# ---------------------------------------------------------------------------
+-
+  name: __cf_bm
+  provider: Cloudflare
+  category: necessary
+  duration: '30 minutes'
+  purpose: 'Bot management. Distinguishes people from automated traffic so the site can be protected from abuse.'
+-
+  name: cf_clearance
+  provider: Cloudflare
+  category: necessary
+  duration: '1 year'
+  purpose: 'Records that a challenge was passed, so the visitor is not challenged again.'
+-
+  name: _cfuvid
+  provider: Cloudflare
+  category: necessary
+  duration: 'Session'
+  purpose: 'Applies rate limiting rules per visitor rather than per IP address.'
+-
+  pattern: '__cflb*'
+  provider: Cloudflare
+  category: necessary
+  duration: '24 hours'
+  purpose: 'Keeps a visitor on the same origin server when load balancing is in use.'
+-
+  name: __stripe_mid
+  provider: Stripe
+  category: necessary
+  duration: '1 year'
+  purpose: 'Fraud prevention. Identifies the device across payment attempts.'
+-
+  name: __stripe_sid
+  provider: Stripe
+  category: necessary
+  duration: '30 minutes'
+  purpose: 'Fraud prevention for the current checkout session.'
+
+# ---------------------------------------------------------------------------
+# Support and chat
+# ---------------------------------------------------------------------------
+-
+  pattern: 'intercom-*'
+  provider: Intercom
+  category: functional
+  duration: 'Up to 9 months'
+  purpose: 'Identifies the visitor to the Intercom messenger so a conversation continues across pages and visits.'
+-
+  name: __zlcmid
+  provider: Zendesk
+  category: functional
+  duration: '1 year'
+  purpose: 'Remembers the visitor to the Zendesk chat widget so a conversation can be resumed.'
+
+# ---------------------------------------------------------------------------
+# Other analytics
+# ---------------------------------------------------------------------------
+-
+  pattern: '_pk_id*'
+  provider: Matomo
+  category: analytics
+  duration: '13 months'
+  purpose: 'Stores a visitor identifier so Matomo can report returning visitors.'
+-
+  pattern: '_pk_ses*'
+  provider: Matomo
+  category: analytics
+  duration: '30 minutes'
+  purpose: 'Stores short lived session data for Matomo.'
+-
+  name: MATOMO_SESSID
+  provider: Matomo
+  category: necessary
+  duration: 'Session'
+  purpose: 'Session cookie used by the Matomo application itself.'
+-
+  name: _cioid
+  provider: Customer.io
+  category: analytics
+  duration: '1 year'
+  purpose: 'Identifies the visitor for behavioural email and messaging.'
+-
+  pattern: '__kla_id*'
+  provider: Klaviyo
+  category: analytics
+  duration: '2 years'
+  purpose: 'Identifies the visitor so Klaviyo can attribute behaviour and purchases to a profile.'
+-
+  pattern: 'ajs_*'
+  provider: Segment
+  category: analytics
+  duration: '1 year'
+  purpose: 'Stores the Segment anonymous and user identifiers that events are attributed to.'
+
+# ---------------------------------------------------------------------------
+# Other consent platforms, worth knowing about if one is already installed
+# ---------------------------------------------------------------------------
+-
+  name: CookieConsent
+  provider: Cookiebot
+  category: necessary
+  duration: '1 year'
+  purpose: 'Stores the consent choices made through Cookiebot. Its presence means a second consent tool is installed alongside this one.'
+-
+  name: OptanonConsent
+  provider: OneTrust
+  category: necessary
+  duration: '1 year'
+  purpose: 'Stores the consent choices made through OneTrust. Its presence means a second consent tool is installed alongside this one.'
+-
+  name: OptanonAlertBoxClosed
+  provider: OneTrust
+  category: necessary
+  duration: '1 year'
+  purpose: 'Records that the OneTrust consent banner was dismissed.'

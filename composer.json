@@ -2,10 +2,27 @@
     "name": "alt-design/alt-cookies",
     "description": "Helps handle scripts and cookies on your Statamic site",
     "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "statamic/cms": "^4.0|^5.74|^6.26"
+    },
+    "require-dev": {
+        "pestphp/pest": "^4.4",
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "orchestra/testbench": "^11.2"
+    },
     "autoload": {
         "psr-4": {
             "AltDesign\\AltCookiesAddon\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "AltDesign\\AltCookiesAddon\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest"
     },
     "extra": {
         "statamic": {
@@ -18,12 +35,10 @@
             ]
         }
     },
-    "require": {
-        "statamic/cms": "^4.0|^5.74|^6.26"
-    },
     "config": {
         "allow-plugins": {
-            "pixelfear/composer-dist-plugin": true
+            "pixelfear/composer-dist-plugin": true,
+            "pestphp/pest-plugin": true
         }
     }
 }
