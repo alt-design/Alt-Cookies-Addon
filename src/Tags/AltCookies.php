@@ -134,6 +134,8 @@ class AltCookies extends Tags
 
     /**
      * Whether the toast should dim the page behind it. Defaults to true when the parameter is not given.
+     * Statamic already turns the literal strings 'true' and 'false' into booleans, and filter_var is kept
+     * for the other spellings authors use, such as "no", "off" and "0". Unrecognised values keep the overlay.
      * @return bool
      */
     protected function overlayEnabled()
