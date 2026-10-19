@@ -74,9 +74,11 @@ the same way; the script counts a missing checkbox as declined.
 
 A visitor who chooses "Accept All Cookies" in the simple pop-up is stored as having given
 full consent. Switching Analytics or Advertising on later therefore activates those scripts
-for them without asking again. When you switch a category on, either send visitors back
-through the pop-up with `{{ AltCookies:reset }}` (it clears the stored choice and reloads),
-or rely on the cookie lifetime, after which they are asked again.
+for them without asking again. That choice stands until the consent cookie expires (the
+Cookie Lifetime setting, in days) or the visitor changes it themselves, for example through a
+link that calls `{{ AltCookies:reset }}`. There is no way to ask every visitor again at once,
+so if a newly enabled category needs fresh consent, shorten the Cookie Lifetime well before
+switching it on.
 
 ### Consent mode and third party tags
 
