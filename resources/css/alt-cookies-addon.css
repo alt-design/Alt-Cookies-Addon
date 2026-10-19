@@ -22,6 +22,7 @@ html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
 }
 
 .alt-cookies-non-modal .alt-cookies-card {
+    box-sizing: border-box;
     max-height: 60vh;
     max-height: 60dvh;
     overflow-y: auto;
