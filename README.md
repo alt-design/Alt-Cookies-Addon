@@ -115,6 +115,9 @@ Two things this changes:
   `document.write` in these fields: run after parsing, it replaces the whole page. The
   standard vendor snippets (Google, Hotjar, Meta, LinkedIn and similar) load asynchronously
   and are unaffected.
+- A Content Security Policy that uses a per-request nonce, and Trusted Types enforcement,
+  are not supported for the gated snippets, because the scripts are re-created from the
+  template. Hash-based and `unsafe-inline` policies work.
 
 
 ## Scanning for cookies

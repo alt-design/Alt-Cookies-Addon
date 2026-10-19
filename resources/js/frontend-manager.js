@@ -29,7 +29,7 @@ window.altCookies = {
             return;
         }
 
-        window.altCookies.activateConsentedScripts();
+        window.altCookies.activateConsentedScripts(String(window.altCookies.consentLevel));
     },
     grants : function (level, category)
     {
@@ -50,9 +50,8 @@ window.altCookies = {
                 && ! window.altCookies.grants(newLevel, category);
         });
     },
-    activateConsentedScripts : function ()
+    activateConsentedScripts : function (level = window.altCookies.getAltCookie())
     {
-        let level = window.altCookies.getAltCookie();
         let templates = document.querySelectorAll('template[data-alt-cookies-category]:not([data-alt-cookies-active])');
 
         templates.forEach(function (template) {
@@ -70,7 +69,7 @@ window.altCookies = {
     {
         let node = nodes.shift();
 
-        if (node === undefined) {
+        if (node === undefined || template.parentNode === null) {
             return;
         }
 
