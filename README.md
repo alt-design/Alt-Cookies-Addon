@@ -52,6 +52,14 @@ From a template, `{{ AltCookies:preferences }}` returns the call for an `onclick
 `{{ AltCookies:reset }}` is still there and still does what it always did, which is throw
 the choices away and reload. Prefer `preferences` for a link people are meant to use.
 
+To configure Google Analytics : 
+
+- Navigate to your `Control Panel > Alt Cookies`
+- Head to the `Google` tab
+- Simply enter your Google Tag ID
+- Both single tags (`G-`, `AW-`, `DC-`) and Google Tag Manager containers (`GTM-`) are supported. The correct snippet is picked based on the prefix, so a `GTM-` id gets the full Tag Manager container snippet rather than the gtag.js one.
+- Add our consent popup or make sure the Alt Cookies scripts are loaded if you're doing a custom popup
+
 ### Only the categories you use
 
 The panel shows the Analytics and Advertising choices only when that category is enabled
@@ -64,13 +72,11 @@ the same way; the script counts a missing checkbox as declined.
 {{ /if }}
 ```
 
-To configure Google Analytics : 
-
-- Navigate to your `Control Panel > Alt Cookies`
-- Head to the `Google` tab
-- Simply enter your Google Tag ID
-- Both single tags (`G-`, `AW-`, `DC-`) and Google Tag Manager containers (`GTM-`) are supported. The correct snippet is picked based on the prefix, so a `GTM-` id gets the full Tag Manager container snippet rather than the gtag.js one.
-- Add our consent popup or make sure the Alt Cookies scripts are loaded if you're doing a custom popup
+A visitor who chooses "Accept All Cookies" in the simple pop-up is stored as having given
+full consent. Switching Analytics or Advertising on later therefore activates those scripts
+for them without asking again. When you switch a category on, either send visitors back
+through the pop-up with `{{ AltCookies:reset }}` (it clears the stored choice and reloads),
+or rely on the cookie lifetime, after which they are asked again.
 
 ### Consent mode and third party tags
 
@@ -127,6 +133,9 @@ Two things this changes:
   `document.write` in these fields: run after parsing, it replaces the whole page. The
   standard vendor snippets (Google, Hotjar, Meta, LinkedIn and similar) load asynchronously
   and are unaffected.
+- A Content Security Policy that uses a per-request nonce, and Trusted Types enforcement,
+  are not supported for the gated snippets, because the scripts are re-created from the
+  template. Hash-based and `unsafe-inline` policies work.
 
 
 ## Scanning for cookies
