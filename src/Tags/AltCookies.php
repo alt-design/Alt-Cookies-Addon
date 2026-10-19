@@ -119,38 +119,27 @@ class AltCookies extends Tags
 
     /**
      * The {{ AltCookies:cookieFields }} tag.
-     * Read cookie, put the cp stuff into the front
-     * @return string|array
+     * Outputs the necessary snippet as it is, and each optional category inside an inert
+     * template that the frontend manager activates once the visitor has consented to it.
+     * @return string
      */
     public function cookieFields()
     {
-        $return = [];
         $data = new Data('settings');
 
-        $return[] = $data->get('necessary');
+        $return = [$data->get('necessary')];
 
-        switch($_COOKIE['AltCookieAddon'] ?? null) {
-            case 4:
-                if ($data->get('enable_advertising')) {
-                    $return[] = $data->get('advertising');
-                }
-                // INTENTIONAL FALLTHROUGH;
-            case 2:
-                if ($data->get('enable_analytics')) {
-                    $return[] = $data->get('analytics');
-                }
-                break;
-            case 3:
-                if ($data->get('enable_advertising')) {
-                    $return[] = $data->get('advertising');
-                }
-                break;
-            default :
-                break;
+        foreach (['analytics', 'advertising'] as $category) {
+            if ($data->get('enable_' . $category) && filled($data->get($category))) {
+                $return[] = sprintf(
+                    '<template data-alt-cookies-category="%s">%s</template>',
+                    $category,
+                    $data->get($category)
+                );
+            }
         }
 
         return implode(' ', $return);
-
     }
 
     /**
@@ -191,6 +180,18 @@ class AltCookies extends Tags
         return 'window.altCookies.resetConsent()';
     }
 
+    /**
+     * The {{ AltCookies:preferences }} tag.
+     * Reopens the panel with the visitor's current choices, for a template that
+     * wants a button of its own rather than a link in page content.
+     *
+     * @return string
+     */
+    public function preferences()
+    {
+        return 'window.altCookies.showPreferences()';
+    }
+
     public function accept()
     {
         $simple = $this->params->get('simple') ?? false;
@@ -205,29 +206,33 @@ class AltCookies extends Tags
         return 'window.altCookies.userConsentDenied()';
     }
 
+    /**
+     * The {{ AltCookies:enabled category="analytics" }} tag.
+     * Whether a consent category is switched on in the settings, so the panel only asks
+     * about cookies the site can actually set.
+     * @return bool
+     */
+    public function enabled()
+    {
+        $category = $this->params->get('category');
+
+        if (! in_array($category, ['analytics', 'advertising'], true)) {
+            return false;
+        }
+
+        return (bool) (new Data('settings'))->get('enable_'.$category);
+    }
+
+    /**
+     * The {{ AltCookies:checkboxes }} tag.
+     * Ticks a checkbox from its configured default. A returning visitor's own choices are
+     * applied in the browser when the panel reopens, so the page does not vary by cookie.
+     * @return string
+     */
     public function checkboxes()
     {
-        $checkbox = $this->params->get('checkbox');
+        $data = new Data('settings');
 
-        switch($_COOKIE['AltCookieAddon'] ?? null) {
-            case 4:
-                return 'checked';
-            case 2:
-                if($checkbox == 'enable_analytics_default') {
-                    return 'checked';
-                }
-                return '';
-            case 3:
-                if($checkbox == 'enable_advertising_default') {
-                    return 'checked';
-                }
-                return '';
-            case 1:
-                return '';
-            default :
-                $data = new Data('settings');
-                $enabled = $data->get($checkbox);
-                return $enabled ? 'checked' : '';
-        }
+        return $data->get($this->params->get('checkbox')) ? 'checked' : '';
     }
 }
