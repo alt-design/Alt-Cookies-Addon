@@ -142,14 +142,31 @@ class AltCookies extends Tags
         return implode(' ', $return);
     }
 
-    // Views
+    /**
+     * The {{ AltCookies:toast }} tag.
+     * Pass overlay="false" to show a compact banner at the bottom of the viewport without the page backdrop.
+     * @return \Illuminate\Contracts\View\View
+     */
     public function toast()
     {
         $data = new Data('settings');
-        if (!($data->get('simple_popup') ?? false)) {
-            return view('alt-cookies::consent');
+        $view = ($data->get('simple_popup') ?? false) ? 'alt-cookies::consent-simple' : 'alt-cookies::consent';
+        return view($view, ['overlay' => $this->overlayEnabled()]);
+    }
+
+    /**
+     * Whether the toast should dim the page behind it. Defaults to true when the parameter is not given.
+     * Statamic already turns the literal strings 'true' and 'false' into booleans, and filter_var is kept
+     * for the other spellings authors use, such as "no", "off" and "0". Unrecognised values keep the overlay.
+     * @return bool
+     */
+    protected function overlayEnabled()
+    {
+        $overlay = $this->params->get('overlay');
+        if ($overlay === null || $overlay === '') {
+            return true;
         }
-        return view('alt-cookies::consent-simple');
+        return filter_var($overlay, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true;
     }
 
     public function scripts()
