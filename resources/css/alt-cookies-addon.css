@@ -21,7 +21,13 @@ html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
     row-gap: 0.5rem;
 }
 
-@media (max-height: 620px) {
+.alt-cookies-non-modal .alt-cookies-card {
+    max-height: 60vh;
+    max-height: 60dvh;
+    overflow-y: auto;
+}
+
+@media (max-height: 620px), (max-width: 480px) {
     :root {
         --alt-cookies-banner-height: 8rem;
     }
