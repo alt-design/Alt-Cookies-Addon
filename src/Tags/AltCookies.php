@@ -141,7 +141,7 @@ class AltCookies extends Tags
     protected function overlayEnabled()
     {
         $overlay = $this->params->get('overlay');
-        if ($overlay === null) {
+        if ($overlay === null || $overlay === '') {
             return true;
         }
         return filter_var($overlay, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true;

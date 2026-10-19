@@ -89,9 +89,22 @@
             });
         }
 
+        function isPinned(element) {
+            for (var node = element; node && node !== document.body; node = node.parentElement) {
+                var position = window.getComputedStyle(node).position;
+                if (position === 'fixed' || position === 'sticky') {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function clearFocused() {
             var focused = document.activeElement;
             if (!observer || !focused || toast.contains(focused)) {
+                return;
+            }
+            if (isPinned(focused)) {
                 return;
             }
             var rect = focused.getBoundingClientRect();
