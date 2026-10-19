@@ -60,6 +60,26 @@ To configure Google Analytics :
 - Both single tags (`G-`, `AW-`, `DC-`) and Google Tag Manager containers (`GTM-`) are supported. The correct snippet is picked based on the prefix, so a `GTM-` id gets the full Tag Manager container snippet rather than the gtag.js one.
 - Add our consent popup or make sure the Alt Cookies scripts are loaded if you're doing a custom popup
 
+### Only the categories you use
+
+The panel shows the Analytics and Advertising choices only when that category is enabled
+on the `General` tab. If you publish your own copy of the consent view, wrap each choice
+the same way; the script counts a missing checkbox as declined.
+
+``` html
+{{ if {AltCookies:enabled category="advertising"} }}
+    <input type="checkbox" name="Advertising" id="alt-cookies-advertising" ... />
+{{ /if }}
+```
+
+A visitor who chooses "Accept All Cookies" in the simple pop-up is stored as having given
+full consent. Switching Analytics or Advertising on later therefore activates those scripts
+for them without asking again. That choice stands until the consent cookie expires (the
+Cookie Lifetime setting, in days) or the visitor changes it themselves, for example through a
+link that calls `{{ AltCookies:reset }}`. There is no way to ask every visitor again at once,
+so if a newly enabled category needs fresh consent, shorten the Cookie Lifetime well before
+switching it on.
+
 ### Consent mode and third party tags
 
 Consent is written synchronously, immediately before the tag or container loads. The baseline goes out as a consent mode `default`, then a stored choice follows straight after as an `update`, in the same script so nothing can fire in between.

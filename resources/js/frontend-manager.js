@@ -164,8 +164,9 @@ window.altCookies = {
             return;
         }
         let necessary = 1
-        let analytics =  (document.getElementById("alt-cookies-analytics")).checked ? 1 : 0;
-        let advertising =  (document.getElementById("alt-cookies-advertising")).checked ? 2 : 0;
+        // A category switched off in the settings has no checkbox, and counts as declined
+        let analytics = document.getElementById("alt-cookies-analytics")?.checked ? 1 : 0;
+        let advertising = document.getElementById("alt-cookies-advertising")?.checked ? 2 : 0;
 
         window.altCookies.consentLevel = necessary + analytics + advertising;
     },
