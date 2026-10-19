@@ -1,0 +1,240 @@
+# Third party services recognised in page markup and in the addon's own script
+# fields. A plain HTTP request cannot run JavaScript, so the cookies these set
+# are never observed by a scan. Finding the vendor is what tells you they will
+# appear once a real browser loads the page.
+#
+# `signatures` are matched case insensitively as substrings.
+# `cookies` are names or patterns that resolve against cookies.yaml.
+
+-
+  name: 'Google Tag Manager'
+  category: analytics
+  signatures:
+    - 'googletagmanager.com/gtm.js'
+    - 'googletagmanager.com/ns.html'
+  cookies: []
+  note: 'Tag Manager sets no cookies of its own, but it loads whatever tags are configured in the container. Anything in that container needs checking in Tag Manager itself, because it will not appear in the site source.'
+
+-
+  name: 'Google Analytics 4'
+  category: analytics
+  signatures:
+    - 'googletagmanager.com/gtag/js'
+    - 'google-analytics.com'
+    - 'analytics.google.com'
+  cookies: ['_ga', '_ga_*', '_gid', '_gat', '_gat_*', '_dc_gtm_*']
+
+-
+  name: 'Google Ads'
+  category: advertising
+  signatures:
+    - 'googleadservices.com'
+    - 'googlesyndication.com'
+    - 'doubleclick.net'
+    - 'google.com/ads'
+  cookies: ['_gcl_au', '_gcl_*', '_gac_*', 'IDE', 'test_cookie', 'DSID', 'NID']
+
+-
+  name: 'Google reCAPTCHA'
+  category: necessary
+  signatures:
+    - 'google.com/recaptcha'
+    - 'gstatic.com/recaptcha'
+    - 'recaptcha.net'
+  cookies: ['_GRECAPTCHA']
+
+-
+  name: 'Google Maps'
+  category: functional
+  signatures:
+    - 'maps.googleapis.com'
+    - 'google.com/maps/embed'
+  cookies: ['NID', 'CONSENT']
+
+-
+  name: 'YouTube'
+  category: advertising
+  signatures:
+    - 'youtube.com/embed'
+    - 'youtube.com/iframe_api'
+    - 'ytimg.com'
+  cookies: ['VISITOR_INFO1_LIVE', 'VISITOR_PRIVACY_METADATA', 'YSC', 'PREF', '__Secure-YEC*', 'CONSENT']
+
+-
+  name: 'YouTube (no-cookie)'
+  category: functional
+  signatures:
+    - 'youtube-nocookie.com'
+  cookies: []
+  note: 'The privacy enhanced player holds off until the visitor presses play. Once they do, it sets the same cookies as the standard embed, so it still belongs behind consent.'
+
+-
+  name: 'Vimeo'
+  category: analytics
+  signatures:
+    - 'player.vimeo.com'
+    - 'vimeocdn.com'
+  cookies: ['vuid', 'player']
+
+-
+  name: 'Meta Pixel'
+  category: advertising
+  signatures:
+    - 'connect.facebook.net'
+    - 'fbevents.js'
+    - 'facebook.com/tr'
+  cookies: ['_fbp', '_fbc', 'fr', 'datr']
+
+-
+  name: 'Microsoft Advertising (UET)'
+  category: advertising
+  signatures:
+    - 'bat.bing.com'
+    - 'uetq'
+  cookies: ['_uetsid*', '_uetvid*', 'MUID']
+
+-
+  name: 'Microsoft Clarity'
+  category: analytics
+  signatures:
+    - 'clarity.ms'
+  cookies: ['_clck*', '_clsk*', 'MUID']
+
+-
+  name: 'Hotjar'
+  category: analytics
+  signatures:
+    - 'static.hotjar.com'
+    - 'script.hotjar.com'
+  cookies: ['_hjSessionUser_*', '_hjSession_*', '_hj*']
+
+-
+  name: 'LinkedIn Insight Tag'
+  category: advertising
+  signatures:
+    - 'snap.licdn.com'
+    - 'px.ads.linkedin.com'
+  cookies: ['li_sugr', 'bcookie', 'bscookie', 'lidc', 'UserMatchHistory', 'AnalyticsSyncHistory', 'li_gc']
+
+-
+  name: 'TikTok Pixel'
+  category: advertising
+  signatures:
+    - 'analytics.tiktok.com'
+  cookies: ['_ttp', 'ttwid']
+
+-
+  name: 'X (Twitter) Ads'
+  category: advertising
+  signatures:
+    - 'static.ads-twitter.com'
+    - 'platform.twitter.com'
+    - 'platform.x.com'
+  cookies: ['personalization_id', 'muc_ads', 'guest_id']
+
+-
+  name: 'Pinterest Tag'
+  category: advertising
+  signatures:
+    - 's.pinimg.com'
+    - 'ct.pinterest.com'
+  cookies: ['_pin_unauth', '_epik']
+
+-
+  name: 'HubSpot'
+  category: analytics
+  signatures:
+    - 'js.hs-scripts.com'
+    - 'js.hsforms.net'
+    - 'js.hs-analytics.net'
+    - 'js.usemessages.com'
+  cookies: ['hubspotutk', '__hstc', '__hssc', '__hssrc', '__hs_opt_out*', 'messagesUtk']
+
+-
+  name: 'Klaviyo'
+  category: analytics
+  signatures:
+    - 'static.klaviyo.com'
+    - 'js.klaviyo.com'
+  cookies: ['__kla_id*']
+
+-
+  name: 'Segment'
+  category: analytics
+  signatures:
+    - 'cdn.segment.com'
+  cookies: ['ajs_*']
+  note: 'Segment forwards events to whichever destinations are configured in Segment, so the cookies set depend on that configuration as well as on this page.'
+
+-
+  name: 'Matomo'
+  category: analytics
+  signatures:
+    - 'matomo.js'
+    - 'matomo.php'
+    - 'piwik.js'
+  cookies: ['_pk_id*', '_pk_ses*', 'MATOMO_SESSID']
+
+-
+  name: 'Intercom'
+  category: functional
+  signatures:
+    - 'widget.intercom.io'
+    - 'js.intercomcdn.com'
+  cookies: ['intercom-*']
+
+-
+  name: 'Zendesk'
+  category: functional
+  signatures:
+    - 'static.zdassets.com'
+    - 'zdassets.com'
+  cookies: ['__zlcmid']
+
+-
+  name: 'Stripe'
+  category: necessary
+  signatures:
+    - 'js.stripe.com'
+  cookies: ['__stripe_mid', '__stripe_sid']
+
+-
+  name: 'Cloudflare'
+  category: necessary
+  signatures:
+    - 'challenges.cloudflare.com'
+    - 'static.cloudflareinsights.com'
+  cookies: ['__cf_bm', 'cf_clearance', '_cfuvid', '__cflb*']
+
+-
+  name: 'Plausible'
+  category: analytics
+  signatures:
+    - 'plausible.io/js'
+  cookies: []
+  note: 'Cookieless by design. Worth recording in a privacy policy as analytics, but it needs no consent banner entry.'
+
+-
+  name: 'Fathom Analytics'
+  category: analytics
+  signatures:
+    - 'cdn.usefathom.com'
+  cookies: []
+  note: 'Cookieless by design. Worth recording in a privacy policy as analytics, but it needs no consent banner entry.'
+
+-
+  name: 'Cookiebot'
+  category: necessary
+  signatures:
+    - 'consent.cookiebot.com'
+  cookies: ['CookieConsent']
+  note: 'A second consent management platform. Running two at once means neither reliably controls what loads. Worth removing one.'
+
+-
+  name: 'OneTrust'
+  category: necessary
+  signatures:
+    - 'cdn.cookielaw.org'
+    - 'optanon'
+  cookies: ['OptanonConsent', 'OptanonAlertBoxClosed']
+  note: 'A second consent management platform. Running two at once means neither reliably controls what loads. Worth removing one.'
