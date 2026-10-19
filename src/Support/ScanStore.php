@@ -52,7 +52,7 @@ class ScanStore
     public function put(array $results): void
     {
         File::ensureDirectoryExists(dirname($this->path()));
-        File::put($this->path(), YAML::dump($results));
+        File::put($this->path(), YAML::dump($results), true);
     }
 
     /**

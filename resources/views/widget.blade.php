@@ -11,9 +11,12 @@
     @if (! $results)
         <p class="alt-cookies-widget__empty">
             No scan has been run. A scan requests a sample of this site's pages and reports the
-            cookies they set, and the third party services it recognises.
+            cookies they set, and the third party services it recognises. This runs the server check
+            only. The full scan, which also loads the pages in your browser, is on the Scan tab.
         </p>
     @else
+        <p class="alt-cookies-widget__foot">These figures come from the server check only. The full scan, which also loads the pages in your browser, is on the Scan tab.</p>
+
         <div class="alt-cookies-widget__stats">
             <div>
                 <span class="alt-cookies-widget__value">{{ $results['counts']['observed'] }}</span>

@@ -145,6 +145,17 @@ back. The analytics hits cannot be taken back.
 On a busy site that is noise. On a quiet one it is visible in the numbers, so run it
 deliberately rather than casually.
 
+The scan page says the same next to the button. Two limits apply to what it finds:
+
+- **Results depend on your browser.** An ad blocker or tracking protection can stop a tag
+  setting its cookies, and the scan will not see them. Run it from a browser without one.
+- **The front end has to be on the same host as the control panel.** A browser will not let
+  one host read the cookies of another, so the second pass finds nothing for a headless or
+  separately hosted front end.
+
+The first pass only follows redirects within a page's own host. A page that redirects to
+another host is reported as not scanned, so another site's cookies are never listed as yours.
+
 To run the header pass on its own, set `ALT_COOKIES_SCAN_IN_BROWSER=false`. Worth doing
 where the control panel is served from a different domain to the front end, or where the
 site refuses to be framed, since the second pass cannot work in either case. A page that
@@ -152,7 +163,9 @@ refuses to be framed is reported rather than quietly skipped.
 
 ### On the dashboard
 
-There is a dashboard widget showing the last scan and a button to run another. Statamic
+There is a dashboard widget showing the last scan and a button to run another. The widget runs
+the server check only, so its figures can differ from the Scan tab, which also loads the pages
+in your browser. Statamic
 does not let an addon put itself on the dashboard, so add it in `config/statamic/cp.php`:
 
 ``` php

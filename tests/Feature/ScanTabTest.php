@@ -82,7 +82,8 @@ it('answers with json when a scan fails over fetch', function () {
     $this->actingAs($this->user)
         ->postJson(cp_route('alt-cookies-addon.scan.run'))
         ->assertStatus(500)
-        ->assertJsonPath('message', 'The scan could not be completed: DNS is having a day');
+        ->assertJsonPath('message', 'The scan could not be completed. The error has been logged.')
+        ->assertDontSee('DNS is having a day', false);
 
     expect(app(ScanStore::class)->get())->toBeNull();
 });

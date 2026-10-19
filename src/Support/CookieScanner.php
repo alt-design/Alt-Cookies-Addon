@@ -1,14 +1,20 @@
 <?php namespace AltDesign\AltCookiesAddon\Support;
 
 use AltDesign\AltCookiesAddon\Helpers\Data;
+use Closure;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Statamic\Facades\Collection;
 use Statamic\Facades\Entry;
 use Statamic\Facades\Site;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 use Throwable;
 
 /**
@@ -56,7 +62,7 @@ class CookieScanner
                     'status' => null,
                     'ok' => false,
                     'error' => $response instanceof Throwable
-                        ? $response->getMessage()
+                        ? $this->reasonFor($url, $response)
                         : 'No response.',
                 ];
 
@@ -103,6 +109,7 @@ class CookieScanner
     public function urls(): array
     {
         $site = Site::current();
+        $host = $this->hostOf($site->absoluteUrl());
         $urls = collect([$site->absoluteUrl()]);
 
         foreach (Collection::all() as $collection) {
@@ -117,12 +124,14 @@ class CookieScanner
                     ->where('published', true)
                     ->limit((int) config('alt-cookies.scan.per_collection', 5))
                     ->get()
-                    ->map(fn ($entry) => $entry->absoluteUrl())
+                    ->reject(fn ($entry) => $entry->isRedirect())
+                    ->map(fn ($entry) => $entry->absoluteUrlWithoutRedirect())
             );
         }
 
         return $urls
             ->filter()
+            ->filter(fn (string $url) => $this->hostOf($url) === $host)
             ->unique()
             ->take((int) config('alt-cookies.scan.max_pages', 15))
             ->values()
@@ -153,11 +162,70 @@ class CookieScanner
                     [self::CONSENT_COOKIE => self::FULL_CONSENT],
                     parse_url($url, PHP_URL_HOST) ?: ''
                 )
-                ->withOptions(['verify' => $verify, 'allow_redirects' => ['max' => 3]])
+                ->withOptions([
+                    'verify' => $verify,
+                    'allow_redirects' => [
+                        'max' => 3,
+                        'on_redirect' => $this->refuseOtherHosts($this->hostOf($url)),
+                    ],
+                ])
                 ->timeout($timeout)
                 ->get($url),
             $urls
         ));
+    }
+
+    /**
+     * A redirect callback that lets a page redirect within its own host, as a
+     * homepage commonly does to a locale prefix, but stops at any other host so
+     * another site's cookies are never reported as this one's.
+     *
+     * @param  string  $host
+     * @return Closure
+     *
+     * @throws OffSiteRedirect
+     */
+    protected function refuseOtherHosts(string $host): Closure
+    {
+        return function (RequestInterface $request, ResponseInterface $response, UriInterface $uri) use ($host) {
+            if ($this->hostOf((string) $uri) !== $host) {
+                throw new OffSiteRedirect('Redirected to another host.');
+            }
+        };
+    }
+
+    /**
+     * @param  string  $url
+     * @return string
+     */
+    protected function hostOf(string $url): string
+    {
+        return strtolower((string) parse_url($url, PHP_URL_HOST));
+    }
+
+    /**
+     * Log the exception and return a short plain reason for the report, so
+     * nothing from the exception itself is stored or shown.
+     *
+     * @param  string  $url
+     * @param  Throwable  $exception
+     * @return string
+     */
+    protected function reasonFor(string $url, Throwable $exception): string
+    {
+        Log::warning('Alt Cookies scan could not fetch '.$url, ['exception' => $exception]);
+
+        for ($cause = $exception; $cause; $cause = $cause->getPrevious()) {
+            if ($cause instanceof OffSiteRedirect) {
+                return 'Redirected to another site';
+            }
+        }
+
+        if (! $exception instanceof ConnectionException) {
+            return 'Could not be fetched';
+        }
+
+        return str_contains($exception->getMessage(), 'timed out') ? 'Timed out' : 'Could not connect';
     }
 
     /**

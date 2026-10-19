@@ -325,6 +325,15 @@ html.dark .alt-cookies-scan__badge--unknown { color: #c084fc; }
     color: var(--acs-muted);
 }
 
+.alt-cookies-scan__caution {
+    margin: 0 0 1rem;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--acs-danger);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--acs-muted);
+}
+
 .alt-cookies-scan__where {
     margin-top: 0.5rem;
     font-size: 0.75rem;

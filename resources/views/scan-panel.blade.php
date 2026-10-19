@@ -22,6 +22,14 @@
         </div>
     </header>
 
+    @if (config('alt-cookies.scan.run_in_browser', true))
+        <p class="alt-cookies-scan__caution">
+            The scan loads this site's pages in this browser with every cookie category accepted, so your
+            analytics and advertising tools will record those visits. What it finds also depends on this
+            browser, and an ad blocker can hide cookies from it.
+        </p>
+    @endif
+
     <p class="alt-cookies-scan__flash alt-cookies-scan__flash--error" data-alt-cookies-error hidden></p>
     <p class="alt-cookies-scan__flash" data-alt-cookies-status hidden></p>
 
@@ -41,7 +49,8 @@
             consent choice is put back. The analytics hits cannot be taken back.
         </p>
         <p class="alt-cookies-scan__hint">
-            Cookies set on another company's domain, such as DoubleClick or Facebook, cannot be
+            The second pass cannot read a front end served from a different host to the control
+            panel. Cookies set on another company's domain, such as DoubleClick or Facebook, cannot be
             read by any page and stay in the likely list. Set
             <code>ALT_COOKIES_SCAN_IN_BROWSER=false</code> to run the header pass on its own.
         </p>

@@ -35,7 +35,9 @@ class CookieScanController
         try {
             $results = $scanner->scan();
         } catch (Throwable $e) {
-            $message = 'The scan could not be completed: '.$e->getMessage();
+            report($e);
+
+            $message = 'The scan could not be completed. The error has been logged.';
 
             return $request->expectsJson()
                 ? response()->json(['message' => $message], 500)
