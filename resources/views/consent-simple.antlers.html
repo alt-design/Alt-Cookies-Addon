@@ -4,7 +4,7 @@
     <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-2 alt-cookies-bottom-0 alt-cookies-inset-x-0 alt-cookies-mx-auto alt-cookies-pointer-events-auto
         alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-full alt-cookies-max-w-[640px]">
         <div class="alt-cookies-card alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-3 ">{{ else }}<div id="alt-cookies-consent-toast-overlay" class="toast-overlay alt-cookies-hidden alt-cookies-fixed alt-cookies-inset-0 alt-cookies-bg-overlay alt-cookies-z-[999]">
-    <div id="alt-cookies-consent-toast" class="toast alt-cookies-fixed alt-cookies-p-4 alt-cookies-bottom-0 alt-cookies-mx-auto alt-cookies-right-0
+    <div id="alt-cookies-consent-toast" role="dialog" aria-modal="true" aria-labelledby="alt-cookies-consent-toast-title" aria-describedby="alt-cookies-consent-toast-text" class="toast alt-cookies-fixed alt-cookies-p-4 alt-cookies-bottom-0 alt-cookies-mx-auto alt-cookies-right-0
         alt-cookies-transition-duration-500 alt-cookies-transition-all alt-cookies-translate-y-full alt-cookies-w-[500px] alt-cookies-max-w-[90%]">
         <div class="alt-cookies-bg-white alt-cookies-shadow-lg alt-cookies-rounded-lg alt-cookies-p-4 ">{{ /if }}
             <div class="alt-cookies-flex alt-cookies-justify-between alt-cookies-items-center{{ if overlay === false }} alt-cookies-header{{ /if }}">
