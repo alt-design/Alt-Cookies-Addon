@@ -22,5 +22,5 @@ it('binds the cookie preferences link in the script it puts on the page', functi
     expect($init)
         ->toContain('a[href="#cookie-preferences"]')
         ->toContain('data-alt-cookies-preferences')
-        ->toContain('window.altCookies.showPreferences()');
+        ->toContain('window.altCookies.showPreferences(trigger)');
 });
