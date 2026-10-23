@@ -13,11 +13,10 @@ document.addEventListener("DOMContentLoaded", (event) => {
         }
 
         clickEvent.preventDefault();
-        window.altCookies.showPreferences();
+        window.altCookies.showPreferences(trigger);
     });
 
     if (window.altCookies.getAltCookie() === null) {
-        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full')
-        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden')
+        window.altCookies.showToast();
     }
 });
