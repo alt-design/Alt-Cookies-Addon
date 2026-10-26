@@ -28,6 +28,16 @@ To enable the default consent popup:
 - Add a way to change the preferences, up to you here, but for example, `<button onclick="{{ AltCookies:reset }}">Cookie Preferences</button>`
 - You're away!!
 
+### Keyboard and screen reader users
+
+The default popup is a modal dialog. While it is open, focus moves to its first choice, Tab and Shift+Tab stay inside it, and the rest of the page is `inert`. When it closes without reloading the page, focus goes back to whatever opened it, or to the top of the page. Escape closes it only when the visitor has already made a choice, since on a first visit there is nothing to fall back on.
+
+If you publish your own copy of the consent view, give the `alt-cookies-consent-toast` element the dialog attributes, or it keeps the old behaviour:
+
+``` html
+<div id="alt-cookies-consent-toast" role="dialog" aria-modal="true" aria-labelledby="alt-cookies-consent-toast-title" aria-describedby="alt-cookies-consent-toast-text" ...>
+```
+
 ### Banner without the overlay
 
 By default the popup dims the whole page and takes every tap until a choice is made. To show a compact banner along the bottom of the screen instead, with no backdrop, pass `overlay="false"`:
