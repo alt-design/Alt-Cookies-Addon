@@ -3,6 +3,10 @@ window.altCookies = {
     toast : null, // Toast element storage (set during init)
     cookieLifetime : 30, //default to 30
     consentLevel : 0,
+    dialogOpen : false,
+    returnFocusTo : null,
+    inertElements : [],
+    pageObserver : null,
     // Called with the accept button
     userConsentGranted : function ()
     {
@@ -176,6 +180,18 @@ window.altCookies = {
         window.altCookies.buildConsentLevel(false);
         window.altCookies.applyConsentLevel();
     },
+    showToast : function (returnFocusTo = document.activeElement)
+    {
+        if (window.altCookies.toast === null) {
+            return;
+        }
+        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full')
+        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden')
+
+        if (window.altCookies.isModal() && ! window.altCookies.dialogOpen) {
+            window.altCookies.openDialog(returnFocusTo);
+        }
+    },
     hideToast : function()
     {
         if (window.altCookies.toast === null) {
@@ -183,6 +199,137 @@ window.altCookies = {
         }
         window.altCookies.toast.classList.add('alt-cookies-translate-y-full')
         window.altCookies.toastOverlay.classList.add('alt-cookies-hidden')
+
+        if (window.altCookies.dialogOpen) {
+            window.altCookies.closeDialog();
+        }
+    },
+    isModal : function ()
+    {
+        return window.altCookies.toast.getAttribute('aria-modal') === 'true';
+    },
+    openDialog : function (returnFocusTo)
+    {
+        window.altCookies.dialogOpen = true;
+        window.altCookies.returnFocusTo = returnFocusTo;
+        window.altCookies.makePageInert();
+        document.addEventListener('keydown', window.altCookies.handleDialogKeys);
+        window.altCookies.focusableInToast()[0]?.focus();
+    },
+    closeDialog : function ()
+    {
+        window.altCookies.dialogOpen = false;
+        document.removeEventListener('keydown', window.altCookies.handleDialogKeys);
+        window.altCookies.releasePage();
+        window.altCookies.restoreFocus();
+    },
+    makePageInert : function ()
+    {
+        window.altCookies.inertElements = [];
+        window.altCookies.pageObserver = new MutationObserver(window.altCookies.makeAddedElementsInert);
+
+        for (let node = window.altCookies.toastOverlay; node !== document.body && node.parentElement !== null; node = node.parentElement) {
+            Array.from(node.parentElement.children).forEach(function (sibling) {
+                if (sibling !== node) {
+                    window.altCookies.makeInert(sibling);
+                }
+            });
+            window.altCookies.pageObserver.observe(node.parentElement, { childList: true });
+        }
+    },
+    makeAddedElementsInert : function (mutations)
+    {
+        mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+                if (node.nodeType === Node.ELEMENT_NODE && ! node.contains(window.altCookies.toastOverlay)) {
+                    window.altCookies.makeInert(node);
+                }
+            });
+        });
+    },
+    makeInert : function (element)
+    {
+        if (element.hasAttribute('inert')) {
+            return;
+        }
+        element.setAttribute('inert', '');
+        window.altCookies.inertElements.push(element);
+    },
+    releasePage : function ()
+    {
+        window.altCookies.pageObserver?.disconnect();
+        window.altCookies.pageObserver = null;
+        window.altCookies.inertElements.forEach(function (element) {
+            element.removeAttribute('inert');
+        });
+        window.altCookies.inertElements = [];
+    },
+    focusableInToast : function ()
+    {
+        let candidates = window.altCookies.toast.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+
+        return Array.from(candidates).filter(function (element) {
+            return element.getClientRects().length > 0;
+        });
+    },
+    // Escape only closes the panel when there is already a choice to fall back on
+    handleDialogKeys : function (event)
+    {
+        if (event.key === 'Escape' && window.altCookies.getAltCookie() !== null) {
+            window.altCookies.hideToast();
+            return;
+        }
+
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        let focusable = window.altCookies.focusableInToast();
+        let first = focusable[0];
+        let last = focusable[focusable.length - 1];
+        let current = document.activeElement;
+        let inside = window.altCookies.toast.contains(current);
+
+        if (first === undefined) {
+            event.preventDefault();
+            return;
+        }
+
+        if (event.shiftKey && (current === first || ! inside)) {
+            event.preventDefault();
+            last.focus();
+            return;
+        }
+
+        if (! event.shiftKey && (current === last || ! inside)) {
+            event.preventDefault();
+            first.focus();
+        }
+    },
+    restoreFocus : function ()
+    {
+        let target = window.altCookies.returnFocusTo;
+        window.altCookies.returnFocusTo = null;
+
+        if (target && target !== document.body && target.isConnected) {
+            target.focus();
+
+            if (document.activeElement === target) {
+                return;
+            }
+        }
+
+        window.altCookies.focusTopOfPage();
+    },
+    // The body is not focusable on its own, so it is made focusable for long enough
+    // to move the starting point for Tab back to the top of the page
+    focusTopOfPage : function ()
+    {
+        document.body.setAttribute('tabindex', '-1');
+        document.body.focus({ preventScroll: true });
+        document.body.removeAttribute('tabindex');
     },
     // Set the cookie with a boolean
     setAltCookie : function ()
@@ -225,21 +372,19 @@ window.altCookies = {
     },
     // Reopen the panel so the visitor can change their mind. Unlike resetConsent
     // this keeps their current choices and does not reload the page
-    showPreferences : function ()
+    showPreferences : function (trigger)
     {
         if (window.altCookies.toast === null) {
             return;
         }
 
         window.altCookies.applyStoredChoices();
-        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
-        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
+        window.altCookies.showToast(trigger);
     },
     // Invalidate the cookie and revoke consent on reset
     resetConsent : function()
     {
-        window.altCookies.toast.classList.remove('alt-cookies-translate-y-full');
-        window.altCookies.toastOverlay.classList.remove('alt-cookies-hidden');
+        window.altCookies.showToast();
         window.altCookies.buildConsentLevel(false);
         window.altCookies.updateConsent();
         window.altCookies.eraseAltCookie();
