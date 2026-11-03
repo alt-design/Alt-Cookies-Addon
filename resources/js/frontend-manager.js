@@ -2,6 +2,7 @@
 window.altCookies = {
     toast : null, // Toast element storage (set during init)
     cookieLifetime : 30, //default to 30
+    consentEvent : 'alt_cookies_consent_update',
     consentLevel : 0,
     dialogOpen : false,
     returnFocusTo : null,
@@ -25,6 +26,7 @@ window.altCookies = {
         let previousLevel = window.altCookies.getAltCookie();
 
         window.altCookies.updateConsent();
+        window.altCookies.announceConsent();
         window.altCookies.setAltCookie();
         window.altCookies.hideToast();
 
@@ -160,6 +162,19 @@ window.altCookies = {
         }
 
         gtag('consent', 'update', window.altCookiesConsentFor(String(window.altCookies.consentLevel)));
+    },
+    // Tag Manager only re-checks a tag held back for consent when a trigger fires, and the
+    // page no longer reloads to give it one. Pushed after the update so the tag sees it.
+    announceConsent : function ()
+    {
+        let level = String(window.altCookies.consentLevel);
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': window.altCookies.consentEvent,
+            'alt_cookies_analytics': window.altCookies.grants(level, 'analytics'),
+            'alt_cookies_advertising': window.altCookies.grants(level, 'advertising')
+        });
     },
     buildConsentLevel : function (accepted)
     {

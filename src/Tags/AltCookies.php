@@ -24,7 +24,13 @@ class AltCookies extends Tags
         $return[] = '<script>';
         // Read the file and swap out the tags
         $js = file_get_contents(__DIR__ . '/../../resources/js/alt-cookies-init.js');
-        $js = str_replace('{{ cookie_lifetime }}', ($data->get('cookie_lifetime') ?? 30), $js);
+        $js = str_replace([
+            '{{ cookie_lifetime }}',
+            '{{ consent_event_name }}',
+        ], [
+            $data->get('cookie_lifetime') ?? 30,
+            json_encode($data->get('consent_event_name') ?: 'alt_cookies_consent_update', JSON_HEX_TAG),
+        ], $js);
         $return[] = $js;
         $return[] = '</script>';
         return implode(' ', $return);

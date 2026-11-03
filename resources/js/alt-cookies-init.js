@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     window.altCookies.toast = document.getElementById('alt-cookies-consent-toast');
     window.altCookies.toastOverlay = document.getElementById('alt-cookies-consent-toast-overlay');
     window.altCookies.cookieLifetime = {{ cookie_lifetime }};
+    window.altCookies.consentEvent = {{ consent_event_name }};
 
     // So an editor can add an ordinary link to the cookie policy page rather than
     // needing an onclick they cannot write from a rich text field
