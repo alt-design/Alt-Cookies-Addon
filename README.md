@@ -134,7 +134,7 @@ The page doesn't reload when consent is given, so a tag held back by its consent
 
 The event is only pushed when a choice is made, not on later page loads, so a tag with both triggers doesn't fire twice.
 
-The event name can be changed under `Consent Event Name` on the `Google` tab, for example to match a trigger your container already has. The two consent values keep their names whatever the event is called.
+The event name can be changed under `Consent Event Name` on the `Google` tab, for example to match a trigger your container already has. The two consent values keep their names whatever the event is called. Clear the field to stop the event being pushed at all.
 
 ### The Tag Manager `noscript` iframe
 

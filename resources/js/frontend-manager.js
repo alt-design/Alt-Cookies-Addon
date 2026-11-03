@@ -167,6 +167,10 @@ window.altCookies = {
     // page no longer reloads to give it one. Pushed after the update so the tag sees it.
     announceConsent : function ()
     {
+        if (! window.altCookies.consentEvent) {
+            return;
+        }
+
         let level = String(window.altCookies.consentLevel);
 
         window.dataLayer = window.dataLayer || [];

@@ -29,7 +29,7 @@ class AltCookies extends Tags
             '{{ consent_event_name }}',
         ], [
             $data->get('cookie_lifetime') ?? 30,
-            json_encode($data->get('consent_event_name') ?: 'alt_cookies_consent_update', JSON_HEX_TAG),
+            json_encode($data->get('consent_event_name') ?? 'alt_cookies_consent_update', JSON_HEX_TAG),
         ], $js);
         $return[] = $js;
         $return[] = '</script>';
