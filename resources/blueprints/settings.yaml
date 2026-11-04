@@ -191,4 +191,18 @@ tabs:
               replicator_preview: true
               hide_display: false
               width: 50
+          -
+            handle: consent_event_name
+            field:
+              default: alt_cookies_consent_update
+              input_type: text
+              antlers: false
+              type: text
+              display: 'Consent Event Name'
+              instructions: 'The <code>event</code> pushed to the <code>dataLayer</code> when the visitor makes a choice. Add it as a Custom Event trigger in Tag Manager to tags held back by their consent settings, which would otherwise wait for the next page load. Leave it blank to push no event.'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
 title: Settings

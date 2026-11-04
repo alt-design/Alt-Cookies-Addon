@@ -118,6 +118,24 @@ The baseline sent before the visitor answers is denied for everything. If your s
 
 Google's own tags respect this out of the box. Third party tags in a container (Meta, TikTok and similar) do not. For those you need to open the tag in Tag Manager and, under `Advanced Settings > Consent Settings`, set `Require additional consent for tag to fire` with `ad_storage`. Without that, Tag Manager fires them regardless of consent state and there's nothing this addon can do about it from outside the container.
 
+### The consent event
+
+When the visitor makes a choice, an event is pushed to the `dataLayer` straight after the consent `update`:
+
+``` js
+{
+    event: 'alt_cookies_consent_update',
+    alt_cookies_analytics: true,
+    alt_cookies_advertising: false
+}
+```
+
+The page doesn't reload when consent is given, so a tag held back by its consent settings on the first page view has nothing left to fire on once the visitor accepts. Give those tags a `Custom Event` trigger for `alt_cookies_consent_update` alongside their page view trigger and they fire as soon as the visitor accepts. Keep the consent settings on the tag as well. The event is pushed for every choice, declining included, and those settings are what stop the tag firing on a decline. If a trigger needs to check the choice itself, `alt_cookies_analytics` and `alt_cookies_advertising` can be read with a Data Layer Variable.
+
+The event is only pushed when a choice is made, not on later page loads, so a tag with both triggers doesn't fire twice.
+
+The event name can be changed under `Consent Event Name` on the `Google` tab, for example to match a trigger your container already has. The two consent values keep their names whatever the event is called. Clear the field to stop the event being pushed at all.
+
 ### The Tag Manager `noscript` iframe
 
 Google's install instructions include a second `<noscript>` snippet alongside the container. We deliberately don't output it.

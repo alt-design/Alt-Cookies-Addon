@@ -75,7 +75,13 @@ class AltCookiesController
         $fields->validate();
 
         // Save the data
-        $data->setAll($fields->process()->values()->except(['addon_instructions', 'scan_report'])->toArray());
+        $values = $fields->process()->values()->except(['addon_instructions', 'scan_report'])->toArray();
+
+        // Statamic shows a field's default in place of null, so a cleared name would come
+        // back on the next save. An empty string stays empty and means no event.
+        $values['consent_event_name'] ??= '';
+
+        $data->setAll($values);
 
         return true;
     }
