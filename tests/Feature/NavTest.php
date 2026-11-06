@@ -3,6 +3,7 @@
 use AltDesign\AltCookiesAddon\ServiceProvider;
 use Illuminate\Support\Collection;
 use Statamic\CP\Navigation\Nav as Navigation;
+use Statamic\CP\Navigation\NavItem;
 use Statamic\Facades\CP\Nav;
 use Statamic\Facades\User;
 
@@ -21,20 +22,54 @@ function navSections(): Collection
     return Nav::build(false);
 }
 
-beforeEach(function () {
-    $this->actingAs(User::make()->id('nav-test')->makeSuper());
-});
-
-it('lists Alt Cookies under Alt Tools in the control panel nav', function () {
+/**
+ * Find a top-level item in the Alt Tools section.
+ */
+function altToolsGroup(string $name): ?NavItem
+{
     $section = navSections()->firstWhere('display', 'Alt Tools');
 
-    expect($section)->not->toBeNull()
-        ->and(collect($section['items'])->map->display()->all())->toContain('Alt Cookies');
+    return collect($section['items'] ?? [])->first(fn (NavItem $item) => $item->display() === $name);
+}
+
+it('lists Alt Cookies in the Privacy & security group under Alt Tools', function () {
+    $this->actingAs(User::make()->id('nav-test')->makeSuper());
+
+    $group = altToolsGroup('Privacy & security');
+
+    expect($group)->not->toBeNull()
+        ->and($group->children()->map->display()->all())->toContain('Alt Cookies');
+});
+
+it('links the Privacy & security group to one of its pages', function () {
+    $this->actingAs(User::make()->id('nav-test')->makeSuper());
+
+    $group = altToolsGroup('Privacy & security');
+
+    expect($group->url())->toBe($group->children()->first()->url());
+});
+
+it('uses icons that exist in the running Statamic version', function () {
+    $this->actingAs(User::make()->id('nav-test')->makeSuper());
+
+    $group = altToolsGroup('Privacy & security');
+
+    collect([$group, ...$group->children()])->each(
+        fn (NavItem $item) => expect($item->svg())->toContain('<svg')
+    );
 });
 
 it('leaves Alt Cookies out of the core Tools section', function () {
+    $this->actingAs(User::make()->id('nav-test')->makeSuper());
+
     $tools = navSections()->firstWhere('display', 'Tools');
 
     expect($tools)->not->toBeNull()
         ->and(collect($tools['items'])->map->display()->all())->not->toContain('Alt Cookies');
+});
+
+it('shows no Alt Tools section to a user without the permission', function () {
+    $this->actingAs(User::make()->id('nav-editor'));
+
+    expect(navSections()->firstWhere('display', 'Alt Tools'))->toBeNull();
 });
