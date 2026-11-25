@@ -6,6 +6,7 @@ use Statamic\Tags\Tags;
 use Statamic\Facades\Blink;
 
 use AltDesign\AltCookiesAddon\Helpers\Data;
+use AltDesign\AltCookiesAddon\Support\PolicyWriter;
 
 class AltCookies extends Tags
 {
@@ -27,9 +28,11 @@ class AltCookies extends Tags
         $js = str_replace([
             '{{ cookie_lifetime }}',
             '{{ consent_event_name }}',
+            '{{ policy_url }}',
         ], [
             $data->get('cookie_lifetime') ?? 30,
             json_encode($data->get('consent_event_name') ?? 'alt_cookies_consent_update', JSON_HEX_TAG),
+            json_encode($this->policyLink(), JSON_HEX_TAG),
         ], $js);
         $return[] = $js;
         $return[] = '</script>';
@@ -213,6 +216,56 @@ class AltCookies extends Tags
     }
 
     /**
+     * The {{ AltCookies:declineLabel }} tag.
+     * The text on the decline button.
+     * @return string
+     */
+    public function declineLabel()
+    {
+        return e((new Data('settings'))->get('decline_label') ?: 'Accept Necessary');
+    }
+
+    /**
+     * The {{ AltCookies:purposes }} tag pair.
+     * What each category the panel asks about is for, so the visitor knows what they are agreeing to.
+     * @return array<int, array{label: string, purpose: string}>
+     */
+    public function purposes()
+    {
+        $data = new Data('settings');
+
+        return collect(['necessary' => 'Necessary', 'analytics' => 'Analytics', 'advertising' => 'Advertising'])
+            ->filter(fn (string $label, string $category) => $category === 'necessary' || $this->categoryEnabled($category))
+            ->map(fn (string $label, string $category) => [
+                'label' => $label,
+                'purpose' => e($data->get($category.'_purpose') ?: PolicyWriter::BLURBS[$category]),
+            ])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * The {{ AltCookies:policyUrl }} tag.
+     * The cookie policy page from the settings, empty when none is set.
+     * @return string
+     */
+    public function policyUrl()
+    {
+        return e($this->policyLink() ?? '');
+    }
+
+    /**
+     * The cookie policy address, accepted only as a path or a web address so it cannot run script.
+     * @return string|null
+     */
+    protected function policyLink()
+    {
+        $url = trim((string) (new Data('settings'))->get('policy_url'));
+
+        return preg_match('#^(/(?!/)|https?://)#i', $url) ? $url : null;
+    }
+
+    /**
      * The {{ AltCookies:enabled category="analytics" }} tag.
      * Whether a consent category is switched on in the settings, so the panel only asks
      * about cookies the site can actually set.
@@ -220,13 +273,18 @@ class AltCookies extends Tags
      */
     public function enabled()
     {
-        $category = $this->params->get('category');
+        return $this->categoryEnabled((string) $this->params->get('category'));
+    }
 
-        if (! in_array($category, ['analytics', 'advertising'], true)) {
-            return false;
-        }
-
-        return (bool) (new Data('settings'))->get('enable_'.$category);
+    /**
+     * Whether an optional consent category is switched on in the settings.
+     * @param string $category
+     * @return bool
+     */
+    protected function categoryEnabled(string $category)
+    {
+        return in_array($category, ['analytics', 'advertising'], true)
+            && (bool) (new Data('settings'))->get('enable_'.$category);
     }
 
     /**

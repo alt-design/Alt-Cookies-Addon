@@ -28,6 +28,12 @@ html:has(.alt-cookies-non-modal:not(.alt-cookies-hidden)) {
     overflow-y: auto;
 }
 
+.toast-overlay:not(.alt-cookies-non-modal) > #alt-cookies-consent-toast {
+    max-height: calc(100vh - 2rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+}
+
 @media (max-height: 620px), (max-width: 480px) {
     :root {
         --alt-cookies-banner-height: 8rem;

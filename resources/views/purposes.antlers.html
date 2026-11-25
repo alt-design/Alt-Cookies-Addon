@@ -1,0 +1,12 @@
+<details class="alt-cookies-purposes alt-cookies-mt-2 alt-cookies-text-sm alt-cookies-text-gray-600">
+    <summary class="alt-cookies-cursor-pointer alt-cookies-underline">What each type of cookie is for</summary>
+    <dl>
+        {{ AltCookies:purposes }}
+        <dt class="alt-cookies-mt-2 alt-cookies-font-semibold alt-cookies-text-gray-700">{{ label }}</dt>
+        <dd>{{ purpose }}</dd>
+        {{ /AltCookies:purposes }}
+    </dl>
+</details>
+{{ if {AltCookies:policyUrl} }}
+<p class="alt-cookies-policy-link alt-cookies-mt-1 alt-cookies-text-sm alt-cookies-text-gray-600"><a href="{{ AltCookies:policyUrl }}" class="alt-cookies-underline">Read our cookie policy</a> for the full list of cookies.</p>
+{{ /if }}
