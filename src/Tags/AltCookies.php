@@ -235,7 +235,7 @@ class AltCookies extends Tags
         $data = new Data('settings');
 
         return collect(['necessary' => 'Necessary', 'analytics' => 'Analytics', 'advertising' => 'Advertising'])
-            ->filter(fn (string $label, string $category) => $category === 'necessary' || $data->get('enable_'.$category))
+            ->filter(fn (string $label, string $category) => $category === 'necessary' || $this->categoryEnabled($category))
             ->map(fn (string $label, string $category) => [
                 'label' => $label,
                 'purpose' => e($data->get($category.'_purpose') ?: PolicyWriter::BLURBS[$category]),
@@ -273,13 +273,18 @@ class AltCookies extends Tags
      */
     public function enabled()
     {
-        $category = $this->params->get('category');
+        return $this->categoryEnabled((string) $this->params->get('category'));
+    }
 
-        if (! in_array($category, ['analytics', 'advertising'], true)) {
-            return false;
-        }
-
-        return (bool) (new Data('settings'))->get('enable_'.$category);
+    /**
+     * Whether an optional consent category is switched on in the settings.
+     * @param string $category
+     * @return bool
+     */
+    protected function categoryEnabled(string $category)
+    {
+        return in_array($category, ['analytics', 'advertising'], true)
+            && (bool) (new Data('settings'))->get('enable_'.$category);
     }
 
     /**

@@ -355,8 +355,7 @@ window.altCookies = {
     {
         const d = new Date();
         d.setTime(d.getTime() + (window.altCookies.cookieLifetime*24*60*60*1000));
-        let expires = "expires="+ d.toUTCString();
-        document.cookie = "AltCookieAddon=" + window.altCookies.consentLevel + ";" + expires + ";path=/";
+        window.altCookies.writeAltCookie(window.altCookies.consentLevel, d);
     },
     // Get the value from our cookie
     getAltCookie: function ()
@@ -366,7 +365,12 @@ window.altCookies = {
         return match ? match[1] : null;
     },
     eraseAltCookie: function () {
-        document.cookie = 'AltCookieAddon=; Max-Age=-99999999; path=/';
+        window.altCookies.writeAltCookie('', new Date(0));
+    },
+    // Setting and clearing share one write, because a cookie is only cleared by the same attributes it was set with
+    writeAltCookie : function (value, expires)
+    {
+        document.cookie = 'AltCookieAddon=' + value + '; expires=' + expires.toUTCString() + '; path=/';
     },
     // Tick the boxes to match what the visitor has already agreed to, so reopening
     // the panel shows their choices rather than resetting them
