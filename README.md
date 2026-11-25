@@ -10,6 +10,7 @@ This addon features:
 - Custom Cookie Lifetime
 - Necessary, Analytics and Advertising Cookies fields
 - Replaceable default consent popup
+- An explanation of each cookie category in the popup, and a link to your cookie policy
 - A cookie scan that reports what your site actually sets, and what it likely sets
 - Cookie policy copy generated from the scan
 
@@ -81,6 +82,28 @@ From a template, `{{ AltCookies:preferences }}` returns the call for an `onclick
 
 `{{ AltCookies:reset }}` is still there and still does what it always did, which is throw
 the choices away and reload. Prefer `preferences` for a link people are meant to use.
+
+### Helping people make an informed choice
+
+Both popups end with a collapsed "What each type of cookie is for" section, explaining each
+category the popup asks about. The standard wording is the same as the generated
+[cookie policy copy](#cookie-policy-copy). To use your own, fill in the `What ... Cookies
+Are For` fields on the `General` tab.
+
+Set `Cookie Policy Link` to the page that lists your cookies, such as `/cookie-policy`, and
+the popup links to it. The popup does not open by itself on that page, so a first-time
+visitor who follows the link can read the policy before choosing. Only a path or an
+`http://` or `https://` address is accepted.
+
+`Decline Button Text` replaces "Accept Necessary" on the decline button, for example with
+"Reject All Cookies".
+
+If you publish your own copy of a consent view, add the explanation and the label to it:
+
+``` antlers
+{{ partial src="alt-cookies::purposes" }}
+<button ... onclick="{{ AltCookies:decline }}">{{ AltCookies:declineLabel }}</button>
+```
 
 To configure Google Analytics : 
 

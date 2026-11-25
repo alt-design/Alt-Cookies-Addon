@@ -16,6 +16,11 @@ it('leaves the older reset tag alone', function () {
         ->toBe('window.altCookies.resetConsent()');
 });
 
+it('clears the consent cookie for the whole site on reset, not just the current path', function () {
+    expect(file_get_contents(__DIR__.'/../../resources/js/frontend-manager.js'))
+        ->toContain("document.cookie = 'AltCookieAddon=; Max-Age=-99999999; path=/';");
+});
+
 it('binds the cookie preferences link in the script it puts on the page', function () {
     $init = (new AltCookies)->init();
 

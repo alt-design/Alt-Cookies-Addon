@@ -41,9 +41,10 @@
                             onclick="{{ AltCookies:accept }}">Accept</button>
                     <button id="alt-cookies-accept-necessary" class="alt-cookies-button alt-cookies-px-4 alt-cookies-py-2 alt-cookies-bg-gray-300 alt-cookies-text-gray-700 alt-cookies-rounded hover:alt-cookies-bg-gray-200
                         focus:alt-cookies-bg-gray-200 focus-visible:alt-cookies-outline focus-visible:alt-cookies-outline-2 focus-visible:alt-cookies-outline-offset-2 focus-visible:alt-cookies-outline-blue-700"
-                            onclick="{{ AltCookies:decline }}">Accept Necessary</button>
+                            onclick="{{ AltCookies:decline }}">{{ AltCookies:declineLabel }}</button>
                 </div>
             </div>
+            {{ partial src="alt-cookies::purposes" }}
         </div>
     </div>
 </div>{{ if overlay === false }}

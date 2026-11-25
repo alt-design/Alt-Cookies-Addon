@@ -286,7 +286,7 @@ window.altCookies = {
     focusableInToast : function ()
     {
         let candidates = window.altCookies.toast.querySelectorAll(
-            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+            'a[href], summary, button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
         );
 
         return Array.from(candidates).filter(function (element) {
@@ -366,7 +366,7 @@ window.altCookies = {
         return match ? match[1] : null;
     },
     eraseAltCookie: function () {
-        document.cookie = 'AltCookieAddon=; Max-Age=-99999999;';
+        document.cookie = 'AltCookieAddon=; Max-Age=-99999999; path=/';
     },
     // Tick the boxes to match what the visitor has already agreed to, so reopening
     // the panel shows their choices rather than resetting them

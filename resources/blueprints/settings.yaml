@@ -28,6 +28,35 @@ tabs:
               hide_display: false
               instructions: 'Changes the popup to a simpler view with 2 buttons instead of checkboxes'
           -
+            handle: decline_label
+            field:
+              default: 'Accept Necessary'
+              input_type: text
+              antlers: false
+              type: text
+              display: 'Decline Button Text'
+              instructions: 'The text on the button that turns down everything except necessary cookies, such as <q>Reject All Cookies</q>'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
+          -
+            handle: policy_url
+            field:
+              input_type: text
+              antlers: false
+              type: text
+              display: 'Cookie Policy Link'
+              instructions: 'The page that lists your cookies, such as <code>/cookie-policy</code>. The banner links to it, and does not open by itself on that page so a first-time visitor can read it.'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+              width: 50
+          -
             handle: cookie_lifetime
             field:
               default: '30'
@@ -50,6 +79,17 @@ tabs:
               replicator_preview: true
               hide_display: false
               instructions: 'E.g. <code>&lt;script&gt;// script that sets cookie&lt;/script&gt;</code> or  <code>&lt;script src="https://alt-design.net/cookie.js" &gt;&lt;/script&gt;</code>'
+          -
+            handle: necessary_purpose
+            field:
+              type: textarea
+              display: 'What Necessary Cookies Are For'
+              instructions: 'Shown in the banner. Leave blank for the standard wording.'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
           -
             handle: enable_analytics
             field:
@@ -86,6 +126,17 @@ tabs:
               replicator_preview: true
               hide_display: false
           -
+            handle: analytics_purpose
+            field:
+              type: textarea
+              display: 'What Analytics Cookies Are For'
+              instructions: 'Shown in the banner. Leave blank for the standard wording.'
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
             handle: enable_advertising
             field:
               default: false
@@ -115,6 +166,17 @@ tabs:
               antlers: false
               type: textarea
               display: Advertising
+              listable: hidden
+              instructions_position: above
+              visibility: visible
+              replicator_preview: true
+              hide_display: false
+          -
+            handle: advertising_purpose
+            field:
+              type: textarea
+              display: 'What Advertising Cookies Are For'
+              instructions: 'Shown in the banner. Leave blank for the standard wording.'
               listable: hidden
               instructions_position: above
               visibility: visible

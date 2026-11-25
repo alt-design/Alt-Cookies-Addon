@@ -17,7 +17,13 @@ document.addEventListener("DOMContentLoaded", (event) => {
         window.altCookies.showPreferences(trigger);
     });
 
-    if (window.altCookies.getAltCookie() === null) {
+    // The banner links to the policy, and opening over it would stop a first-time visitor reading it
+    const policyUrl = {{ policy_url }};
+    const pageAddress = (url) => url.origin + url.pathname.replace(/\/$/, '');
+    const onPolicyPage = policyUrl !== null
+        && pageAddress(new URL(policyUrl, location.href)) === pageAddress(location);
+
+    if (window.altCookies.getAltCookie() === null && ! onPolicyPage) {
         window.altCookies.showToast();
     }
 });
