@@ -45,7 +45,7 @@ it('links to the cookie policy when one is set', function (bool $simple) {
 
 it('leaves the policy link out when none is set, or when it is not a web address', function (?string $url) {
     expect(bannerWith(['policy_url' => $url]))->not->toContain('Read our cookie policy');
-})->with([null, '', 'javascript:alert(1)']);
+})->with([null, '', 'javascript:alert(1)', '//other.example/cookies']);
 
 it('tells the page where the policy is so the banner can stay closed there', function () {
     test()->writeSettings(['policy_url' => '/cookie-policy']);

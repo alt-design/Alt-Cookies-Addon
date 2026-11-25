@@ -262,7 +262,7 @@ class AltCookies extends Tags
     {
         $url = trim((string) (new Data('settings'))->get('policy_url'));
 
-        return preg_match('#^(/|https?://)#i', $url) ? $url : null;
+        return preg_match('#^(/(?!/)|https?://)#i', $url) ? $url : null;
     }
 
     /**
